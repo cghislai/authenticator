@@ -1,0 +1,138 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.7"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.7
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.7.xsd">
+
+    <changeSet id="0-sequence" author="cghislai">
+        <createTable tableName="SEQUENCE">
+            <column name="SEQ_NAME" type="VARCHAR(20)"/>
+            <column name="SEQ_COUNT" type="BIGINT UNSIGNED"/>
+        </createTable>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_GEN"/>
+            <column name="SEQ_COUNT" value="0"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="1-application-table" author="cghislai">
+        <createTable tableName="application">
+            <column name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="url" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="active" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2-rsa-key-pair-table" author="cghislai">
+        <createTable tableName="rsa_key_pair">
+            <column name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="modulus" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="private_exponent" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="public_exponent" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="signing" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="app_secret" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="application_id" type="BIGINT UNSIGNED">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="rsa_key_pair_application_id"
+                                 baseTableName="rsa_key_pair" baseColumnNames="application_id"
+                                 referencedTableName="application" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3-auth-user-table" author="cghislai">
+        <createTable tableName="auth_user">
+            <column name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="admin" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_expired" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_verified" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createView viewName="user_roles">
+            select name as name, 'authenticator.USER' as role from auth_user
+            union all
+            select name as name, 'authenticator.ACTIVE' as role from auth_user where active is true
+            union all
+            select name as name, 'authenticator.ADMIN' as role from auth_user where admin is true
+            union all
+            select email as name, 'authenticator.USER' as role from auth_user
+            union all
+            select email as name, 'authenticator.ACTIVE' as role from auth_user where active is true
+            union all
+            select email as name, 'authenticator.ADMIN' as role from auth_user where admin is true
+        </createView>
+    </changeSet>
+
+    <changeSet id="4-auth-user-application" author="cghislai">
+        <createTable tableName="auth_user_application">
+            <column name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="application_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="auth_user_application_user_id"
+                                 baseTableName="auth_user_application" baseColumnNames="user_id"
+                                 referencedTableName="auth_user" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="auth_user_application_id"
+                                 baseTableName="auth_user_application" baseColumnNames="application_id"
+                                 referencedTableName="application" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

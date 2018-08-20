@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>authenticator-parent</artifactId>
+        <groupId>com.charlyghislain.authenticator</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>authenticator-web</artifactId>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-domain</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-ejb</artifactId>
+            <type>ejb</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-application-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-application-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-admin-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-admin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-management-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-management</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
