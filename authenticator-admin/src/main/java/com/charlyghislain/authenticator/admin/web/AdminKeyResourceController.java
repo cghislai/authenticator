@@ -64,7 +64,7 @@ public class AdminKeyResourceController implements AdminKeyResource {
 
     @Override
     public WsKey createKey(WsKey wsKey) {
-        RsaKeyPair key = keyConverter.translateWsKey(wsKey);
+        RsaKeyPair key = keyConverter.toRsaKeyPair(wsKey);
         try {
             RsaKeyPair rsaKeyPair = rsaKeyPairUpdateService.createNewKey(key);
             return wsKeyConverter.toWskey(rsaKeyPair);
@@ -75,7 +75,7 @@ public class AdminKeyResourceController implements AdminKeyResource {
 
     @Override
     public WsKey updateKey(Long keyId, WsKey wsKey) {
-        RsaKeyPair keyUpdate = keyConverter.translateWsKey(wsKey);
+        RsaKeyPair keyUpdate = keyConverter.toRsaKeyPair(wsKey);
         RsaKeyPair key = rsaKeyPairQueryService.findRsaKeyPairById(keyId)
                 .orElseThrow(this::newNotFoundException);
         try {

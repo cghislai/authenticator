@@ -19,6 +19,7 @@ import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,6 +28,7 @@ import javax.persistence.PersistenceContext;
 import javax.security.enterprise.identitystore.PasswordHash;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Stateless
@@ -45,20 +47,25 @@ public class UserUpdateService {
     private PasswordHash passwordHash;
     @Inject
     private ApplicationEventService applicationEventService;
+    @Inject
+    private EmailVerificationUpdateService emailVerificationUpdateService;
+    @Inject
+    private PasswordResetTokenUpdateService passwordResetTokenUpdateService;
 
     //    @DenyAll
-    public User createUserNoChecks(@Valid User user) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public User createUserNoChecks(User user) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = user.getName();
         String email = user.getEmail();
 
         checkDuplicateName(name);
         checkDuplicateEmail(email);
 
+        user.setCreationTime(LocalDateTime.now());
         return saveUser(user);
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
-    public User createUser(@Valid User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public User createUser(User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = newUser.getName();
         String email = newUser.getEmail();
         boolean admin = newUser.isAdmin();
@@ -74,16 +81,18 @@ public class UserUpdateService {
         user.setAdmin(admin);
         user.setEmailVerified(false);
         user.setPasswordExpired(true);
+        user.setCreationTime(LocalDateTime.now());
 
         return saveUser(user);
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
-    public User updateUser(@NotNull User existingUser, @Valid User userUpdate) throws NameAlreadyExistsException, EmailAlreadyExistsException, AdminCannotLockHerselfOutException {
+    public User updateUser(@NotNull User existingUser, User userUpdate) throws NameAlreadyExistsException, EmailAlreadyExistsException, AdminCannotLockHerselfOutException {
         String name = userUpdate.getName();
         String email = userUpdate.getEmail();
         boolean admin = userUpdate.isAdmin();
         boolean active = userUpdate.isActive();
+        boolean emailVerified = userUpdate.isEmailVerified();
 
 
         checkDuplicateName(existingUser, name);
@@ -92,21 +101,28 @@ public class UserUpdateService {
         checkAdminStateChange(admin, existingUser);
 
         boolean emailChanged = !existingUser.getEmail().equals(email);
+        boolean emailVerifiedChanged = existingUser.isEmailVerified() != emailVerified;
 
         existingUser.setName(name);
         existingUser.setEmail(email);
         existingUser.setActive(active);
         existingUser.setAdmin(admin);
+        existingUser.setEmailVerified(emailVerified);
         if (emailChanged) {
-            existingUser.setEmailVerified(false);
+            existingUser.setEmailVerified(false || emailVerified);
+            emailVerificationUpdateService.removeAllUserTokens(existingUser);
+        }
+        if (emailVerifiedChanged && emailVerified) {
+            this.applicationEventService.notifiyEmailVerified(existingUser);
         }
         return saveUser(existingUser);
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_APPLICATION, AuthenticatorConstants.ROLE_ADMIN})
-    public UserApplication createApplicationUser(@NotNull Application application, @Valid User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public UserApplication createApplicationUser(@NotNull Application application, User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = newUser.getName();
         String email = newUser.getEmail();
+        boolean active = newUser.isActive();
 
         checkDuplicateName(name);
         checkDuplicateEmail(email);
@@ -118,22 +134,33 @@ public class UserUpdateService {
         user.setAdmin(false);
         user.setEmailVerified(false);
         user.setPasswordExpired(true);
+        user.setCreationTime(LocalDateTime.now());
 
-        User savedUser = saveUser(user);
+        User managedUser = saveUser(user);
 
         UserApplication userApplication = new UserApplication();
-        userApplication.setUser(savedUser);
+        userApplication.setUser(managedUser);
         userApplication.setApplication(application);
-        userApplication.setActive(false);
+        userApplication.setActive(active);
+        userApplication.setCreationTime(LocalDateTime.now());
         UserApplication managedUserApplication = saveUserApplication(userApplication);
 
-        applicationEventService.onUserAdded(managedUserApplication);
+        managedUser.getUserApplications().add(managedUserApplication);
+        applicationEventService.notifyUserAdded(managedUserApplication);
 
         return managedUserApplication;
     }
 
-    @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN, AuthenticatorConstants.ROLE_APPLICATION})
-    public UserApplication updateApplicationUser(@NotNull UserApplication userApplication, @Valid User userUpdate) {
+    @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
+    public UserApplication setUserApplicationActive(@NotNull UserApplication existinUserApplication, boolean active) {
+
+        existinUserApplication.setActive(active);
+
+        return saveUserApplication(existinUserApplication);
+    }
+
+    @RolesAllowed({AuthenticatorConstants.ROLE_APPLICATION})
+    public UserApplication updateApplicationUser(@NotNull UserApplication userApplication, User userUpdate) {
         boolean active = userUpdate.isActive();
 
         userApplication.setActive(active);
@@ -148,31 +175,38 @@ public class UserUpdateService {
         User user = userApplication.getUser();
         Long userId = user.getId();
 
-        removeUserApplication(userApplication);
+        User managedUser = removeUserApplication(userApplication);
 
         applicationEventService.notifyUserRemoved(application, userId);
 
-        // TODO: remove user as well?
-
-        boolean hasNoMoreApplications = checkHasNoMoreApplications(user);
-        if (hasNoMoreApplications) {
-            removeUser(user);
+        boolean hasNoMoreApplications = checkHasNoMoreApplications(managedUser);
+        if (hasNoMoreApplications && !managedUser.isAdmin()) {
+            removeUser(managedUser);
         }
     }
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
-    public UserApplication linkUserToApplication(@NotNull User user, @NotNull Application application) throws UnauthorizedOperationException {
+    public UserApplication linkUserToApplicationOnTokenRequest(@NotNull User user, @NotNull Application application) throws UnauthorizedOperationException {
         checkIsCallerUser(user);
         checkIsActive(user);
-        checkDoestHaveApplication(user, application);
+        checkDoesNotHaveApplication(user, application);
+        checkUsersAreAddedOnTokenRequest(application);
+
+        boolean addedUsersAreActive = application.isAddedUsersAreActive();
 
         UserApplication userApplication = new UserApplication();
         userApplication.setUser(user);
         userApplication.setApplication(application);
-        UserApplication savedUserApplication = saveUserApplication(userApplication);
+        userApplication.setCreationTime(LocalDateTime.now());
+        userApplication.setActive(addedUsersAreActive);
+        UserApplication managedUserApplication = saveUserApplication(userApplication);
 
-        applicationEventService.onUserAdded(savedUserApplication);
-        return savedUserApplication;
+        user.getUserApplications().add(managedUserApplication);
+        User managedUser = saveUser(user);
+        managedUserApplication.setUser(managedUser);
+
+        applicationEventService.notifyUserAdded(managedUserApplication);
+        return managedUserApplication;
     }
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
@@ -184,13 +218,13 @@ public class UserUpdateService {
         checkIsActive(user);
         checkIsCallerUser(user);
 
-        removeUserApplication(userApplication);
+        User managedUser = removeUserApplication(userApplication);
 
         applicationEventService.notifyUserRemoved(application, userId);
 
-        boolean hasNoMoreApplications = checkHasNoMoreApplications(user);
-        if (hasNoMoreApplications) {
-            removeUser(user);
+        boolean hasNoMoreApplications = checkHasNoMoreApplications(managedUser);
+        if (hasNoMoreApplications && !user.isAdmin()) {
+            removeUser(managedUser);
         }
     }
 
@@ -216,6 +250,7 @@ public class UserUpdateService {
         user.setEmail(email);
         if (emailChanged) {
             user.setEmailVerified(false);
+            emailVerificationUpdateService.removeAllUserTokens(user);
         }
         return saveUser(user);
     }
@@ -232,13 +267,81 @@ public class UserUpdateService {
         return saveUser(user);
     }
 
+    @PermitAll
+    public User resetUserPassword(@NotNull User user, @ValidPassword String plainPassword, @NotNull String resetToken) throws UnauthorizedOperationException {
+        checkIsActive(user);
+        validatePasswordResetToken(user, resetToken);
+
+        String hashedPassword = passwordHash.generate(plainPassword.toCharArray());
+        boolean emailWasVerified = user.isEmailVerified();
+
+        user.setPassword(hashedPassword);
+        user.setPasswordExpired(false);
+        user.setEmailVerified(true);
+        User managedUser = saveUser(user);
+        passwordResetTokenUpdateService.removeAllUserTokens(managedUser);
+
+        if (!emailWasVerified) {
+            applicationEventService.notifiyEmailVerified(managedUser);
+        }
+        return managedUser;
+    }
+
+
+    @RolesAllowed(AuthenticatorConstants.ROLE_APPLICATION)
+    public UserApplication updateApplicationUserPassword(@NotNull UserApplication userApplication, @ValidPassword String plainPassword) throws UnauthorizedOperationException {
+        Application application = userApplication.getApplication();
+        checkApplicationCanResetPasswords(application);
+
+        User user = userApplication.getUser();
+        String hashedPassword = passwordHash.generate(plainPassword.toCharArray());
+
+        user.setPassword(hashedPassword);
+        user.setPasswordExpired(false);
+
+        User managedUser = saveUser(user);
+        passwordResetTokenUpdateService.removeAllUserTokens(managedUser);
+
+        userApplication.setUser(managedUser);
+        UserApplication managedUserApplication = saveUserApplication(userApplication);
+        managedUser.getUserApplications().add(managedUserApplication);
+
+        return managedUserApplication;
+    }
+
+
     @RolesAllowed(AuthenticatorConstants.ROLE_ADMIN)
     public User setUserPassword(@NotNull User user, @ValidPassword String plainPassword) {
         String hashedPassword = passwordHash.generate(plainPassword.toCharArray());
 
         user.setPassword(hashedPassword);
         user.setPasswordExpired(false);
-        return saveUser(user);
+        User managedUser = saveUser(user);
+
+        passwordResetTokenUpdateService.removeAllUserTokens(managedUser);
+        return managedUser;
+    }
+
+
+    private void checkApplicationCanResetPasswords(Application application) throws UnauthorizedOperationException {
+        boolean canResetUserPassword = application.isCanResetUserPassword();
+        if (!canResetUserPassword) {
+            throw new UnauthorizedOperationException();
+        }
+    }
+
+    private void checkUsersAreAddedOnTokenRequest(Application application) throws UnauthorizedOperationException {
+        boolean existingUsersAreAddedOnTokenRequest = application.isExistingUsersAreAddedOnTokenRequest();
+        if (!existingUsersAreAddedOnTokenRequest) {
+            throw new UnauthorizedOperationException();
+        }
+    }
+
+    private void validatePasswordResetToken(User user, String resetToken) throws UnauthorizedOperationException {
+        boolean valid = passwordResetTokenUpdateService.validatePasswordResetToken(user, resetToken);
+        if (!valid) {
+            throw new UnauthorizedOperationException();
+        }
     }
 
     private void checkAdminStateChange(boolean admin, User user) throws AdminCannotLockHerselfOutException {
@@ -331,7 +434,7 @@ public class UserUpdateService {
     }
 
 
-    private void checkDoestHaveApplication(User user, Application application) throws UnauthorizedOperationException {
+    private void checkDoesNotHaveApplication(User user, Application application) throws UnauthorizedOperationException {
         boolean hasApplication = userQueryService.findUserApplication(user, application).isPresent();
         if (hasApplication) {
             throw new UnauthorizedOperationException();
@@ -359,7 +462,7 @@ public class UserUpdateService {
     }
 
 
-    private User saveUser(User user) {
+    private User saveUser(@Valid User user) {
         checkUserHasPassword(user);
         User managedUser = entityManager.merge(user);
         return managedUser;
@@ -368,6 +471,8 @@ public class UserUpdateService {
     private void removeUser(User user) {
         try {
             User managedUser = entityManager.merge(user);
+            this.emailVerificationUpdateService.removeAllUserTokens(managedUser);
+            this.passwordResetTokenUpdateService.removeAllUserTokens(managedUser);
             entityManager.remove(managedUser);
         } catch (Exception e) {
             throw new AuthenticatorRuntimeException("Could not remove user", e);
@@ -375,15 +480,21 @@ public class UserUpdateService {
     }
 
 
-    private UserApplication saveUserApplication(UserApplication userApplication) {
+    private UserApplication saveUserApplication(@Valid UserApplication userApplication) {
         UserApplication managedUserApplication = entityManager.merge(userApplication);
         return managedUserApplication;
     }
 
-    private void removeUserApplication(UserApplication userApplication) {
+    private User removeUserApplication(UserApplication userApplication) {
         try {
             UserApplication managedApplication = entityManager.merge(userApplication);
+            User managedUser = managedApplication.getUser();
+
+            this.emailVerificationUpdateService.removeAllUserApplicationTokens(managedApplication);
             entityManager.remove(managedApplication);
+
+            managedUser.getUserApplications().remove(managedApplication);
+            return managedUser;
         } catch (Exception e) {
             throw new AuthenticatorRuntimeException("Could not remove user application", e);
         }

@@ -14,6 +14,7 @@ import com.charlyghislain.authenticator.admin.web.converter.UserConverter;
 import com.charlyghislain.authenticator.admin.web.converter.UserFilterConverter;
 import com.charlyghislain.authenticator.admin.web.converter.WsUserApplicationConverter;
 import com.charlyghislain.authenticator.admin.web.converter.WsUserConverter;
+import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.exception.AdminCannotLockHerselfOutException;
@@ -24,6 +25,7 @@ import com.charlyghislain.authenticator.domain.domain.filter.UserFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
+import com.charlyghislain.authenticator.ejb.service.ApplicationQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserUpdateService;
 
@@ -38,6 +40,8 @@ public class AdminUserResourceController implements AdminUserResource {
     private UserQueryService userQueryService;
     @Inject
     private UserUpdateService userUpdateService;
+    @Inject
+    private ApplicationQueryService applicationQueryService;
 
     @Inject
     private WsUserConverter wsUserConverter;
@@ -117,6 +121,32 @@ public class AdminUserResourceController implements AdminUserResource {
         ResultList<UserApplication> userApplications = userQueryService.findUserApplications(userApplicationFilter, pagination);
         List<WsUserApplication> wsUserApplications = userApplications.map(wsUserApplicationConverter::toWsUserApplication).getResults();
         return new WsResultList<>(wsUserApplications, userApplications.getTotalCount());
+    }
+
+    @Override
+    public WsUserApplication activateUserApplication(Long userId, Long applicationId) {
+        User user = userQueryService.findUserById(userId)
+                .orElseThrow(this::newNotFoundException);
+        Application application = applicationQueryService.findApplicationById(applicationId)
+                .orElseThrow(this::newNotFoundException);
+        UserApplication userApplication = userQueryService.findUserApplication(user, application)
+                .orElseThrow(this::newNotFoundException);
+
+        UserApplication updatedUserApplication = userUpdateService.setUserApplicationActive(userApplication, true);
+        return wsUserApplicationConverter.toWsUserApplication(updatedUserApplication);
+    }
+
+    @Override
+    public WsUserApplication deactivateUserApplication(Long userId, Long applicationId) {
+        User user = userQueryService.findUserById(userId)
+                .orElseThrow(this::newNotFoundException);
+        Application application = applicationQueryService.findApplicationById(applicationId)
+                .orElseThrow(this::newNotFoundException);
+        UserApplication userApplication = userQueryService.findUserApplication(user, application)
+                .orElseThrow(this::newNotFoundException);
+
+        UserApplication updatedUserApplication = userUpdateService.setUserApplicationActive(userApplication, false);
+        return wsUserApplicationConverter.toWsUserApplication(updatedUserApplication);
     }
 
     private AuthenticatorAdminWebException newNotFoundException() {

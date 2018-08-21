@@ -5,6 +5,9 @@ import com.charlyghislain.authenticator.admin.api.domain.WsUser;
 import com.charlyghislain.authenticator.domain.domain.User;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @ApplicationScoped
 public class WsUserConverter {
@@ -17,6 +20,9 @@ public class WsUserConverter {
         boolean admin = user.isAdmin();
         boolean emailVerified = user.isEmailVerified();
         boolean passwordExpired = user.isPasswordExpired();
+        LocalDateTime creationTime = user.getCreationTime();
+
+        ZonedDateTime creationZonedDateTime = creationTime.atZone(ZoneId.systemDefault());
 
         WsUser wsUser = new WsUser();
         wsUser.setId(id);
@@ -26,6 +32,7 @@ public class WsUserConverter {
         wsUser.setAdmin(admin);
         wsUser.setEmailVerified(emailVerified);
         wsUser.setPasswordExpired(passwordExpired);
+        wsUser.setCreationDateTime(creationZonedDateTime);
         return wsUser;
     }
 

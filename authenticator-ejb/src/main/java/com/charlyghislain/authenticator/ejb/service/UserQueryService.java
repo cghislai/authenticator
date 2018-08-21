@@ -84,10 +84,16 @@ public class UserQueryService {
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
-    public ResultList<UserApplication> findUserApplications(UserApplicationFilter userApplicationFilter, Pagination<UserApplication> Pagination) {
+    public ResultList<UserApplication> findUserApplications(UserApplicationFilter userApplicationFilter, Pagination<UserApplication> pagination) {
         CriteriaQuery<UserApplication> searchQuery = DbQueryUtils.createSearchQuery(entityManager, UserApplication.class, userApplicationFilter,
                 this::createUserApplicationPredicates);
-        return DbQueryUtils.toResultList(entityManager, searchQuery, Pagination);
+        return DbQueryUtils.toResultList(entityManager, searchQuery, pagination);
+    }
+
+    public ResultList<UserApplication> findAllUserApplications(UserApplicationFilter userApplicationFilter) {
+        CriteriaQuery<UserApplication> searchQuery = DbQueryUtils.createSearchQuery(entityManager, UserApplication.class, userApplicationFilter,
+                this::createUserApplicationPredicates);
+        return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
     private List<Predicate> createUserApplicationPredicates(From<?, UserApplication> root, UserApplicationFilter filter) {
@@ -95,24 +101,36 @@ public class UserQueryService {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         UserFilter userFilter = filter.getUserFilter();
-        ApplicationFilter applicationFilter = filter.getApplicationFilter();
-
         Join<UserApplication, User> userJoin = root.join(UserApplication_.user);
-        Path<Long> userIdPath = userJoin.get(User_.id);
-        Optional.ofNullable(userFilter.getId())
-                .map(id -> criteriaBuilder.equal(userIdPath, id))
-                .ifPresent(predicates::add);
 
+        ApplicationFilter applicationFilter = filter.getApplicationFilter();
         Join<UserApplication, Application> applicationJoin = root.join(UserApplication_.application);
-        Path<Long> applicationIdPath = applicationJoin.get(Application_.id);
-        Optional.ofNullable(applicationFilter.getId())
-                .map(id -> criteriaBuilder.equal(applicationIdPath, id))
-                .ifPresent(predicates::add);
+
 
         Path<Boolean> activePath = root.get(UserApplication_.active);
         Optional.ofNullable(filter.getActive())
                 .map(active -> criteriaBuilder.equal(activePath, active))
                 .ifPresent(predicates::add);
+
+        Optional.ofNullable(filter.getApplication())
+                .map(app->criteriaBuilder.equal(applicationJoin, app))
+                .ifPresent(predicates::add);
+
+        Optional.ofNullable(filter.getUser())
+                .map(user->criteriaBuilder.equal(userJoin, user))
+                .ifPresent(predicates::add);
+
+
+        Path<Long> userIdPath = userJoin.get(User_.id);
+        Optional.ofNullable(userFilter.getId())
+                .map(id -> criteriaBuilder.equal(userIdPath, id))
+                .ifPresent(predicates::add);
+
+        Path<Long> applicationIdPath = applicationJoin.get(Application_.id);
+        Optional.ofNullable(applicationFilter.getId())
+                .map(id -> criteriaBuilder.equal(applicationIdPath, id))
+                .ifPresent(predicates::add);
+
 
         Path<String> namePath = userJoin.get(User_.name);
         Optional.ofNullable(userFilter.getName())

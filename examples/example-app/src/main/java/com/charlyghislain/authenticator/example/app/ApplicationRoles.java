@@ -4,5 +4,5 @@ import com.charlyghislain.authenticator.application.api.domain.AuthenticatorCons
 
 public class ApplicationRoles {
     public static final String EXAMPLE_ROLE = "exampleRole";
-    public static final String AUTHNETICATOR_APP_ROLE = AuthenticatorConstants.AUTHENTICATOR_ROLE_APPLICATION;
+    public static final String AUTHENTICATOR_APP_ROLE = AuthenticatorConstants.AUTHENTICATOR_ROLE_APPLICATION;
 }

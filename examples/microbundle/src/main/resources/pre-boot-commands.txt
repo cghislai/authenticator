@@ -4,9 +4,6 @@ set configs.config.server-config.admin-service.das-config.dynamic-reload-enabled
 set configs.config.server-config.network-config.network-listeners.network-listener.https-listener.enabled=true
 set configs.config.server-config.network-config.network-listeners.network-listener.http-listener.enabled=false
 
-set-config-secrets-dir --directory=/var/run/secrets
-#create-jvm-options -Dcom.charlyghislain.auth.config.externalConfigPaths=/var/run/configs
-
 create-jdbc-connection-pool --datasourceclassname=org.h2.jdbcx.JdbcDataSource --restype=javax.sql.DataSource --property=URL=jdbc\:h2\:${com.sun.aas.instanceRoot}/lib/databases/embedded_auth;AUTO_SERVER\=TRUE authPool
 
 create-jdbc-resource --connectionpoolid=authPool jdbc/authenticator

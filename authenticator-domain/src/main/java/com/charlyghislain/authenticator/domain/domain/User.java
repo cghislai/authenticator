@@ -8,14 +8,15 @@ import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifier
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "auth_user")
@@ -58,9 +59,12 @@ public class User implements WithId, WithName {
     @NotNull
     private boolean emailVerified;
 
-    @OneToMany(mappedBy = "user")
     @NotNull
-    private List<UserApplication> userApplications = new ArrayList<>();
+    @Column(name = "creation_time")
+    private LocalDateTime creationTime;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<UserApplication> userApplications;
 
     public Long getId() {
         return id;
@@ -126,12 +130,20 @@ public class User implements WithId, WithName {
         this.admin = admin;
     }
 
-    public List<UserApplication> getUserApplications() {
+    public Set<UserApplication> getUserApplications() {
         return userApplications;
     }
 
-    public void setUserApplications(List<UserApplication> userApplications) {
+    public void setUserApplications(Set<UserApplication> userApplications) {
         this.userApplications = userApplications;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 
     @Override

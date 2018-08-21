@@ -1,0 +1,326 @@
+<html>
+<head>
+    <link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+
+<h1 id="title"></h1>
+<div class="columns">
+    <div class="login-form">
+        <h3>Login to auth</h3>
+        <form id="loginForm" action="javascript:;" onsubmit="return submitForm(this)">
+            <div class="row">
+                <input name="login" placeholder="Login"
+                       type="text" autofocus required minlength="1">
+            </div>
+            <div class="row">
+                <input name="password" placeholder="Password"
+                       type="password" minlength="8" required>
+            </div>
+            <div class="row">
+                <input type="submit" placeholder="Login">
+            </div>
+        </form>
+        <div class="forgot password">
+            <a href="#" onclick="onPasswordResetClick()">Forgot password?</a>
+        </div>
+    </div>
+
+
+    <div class="register-form">
+        <h3>Create a new account</h3>
+        <form id="registerFOrm" action="javascript:;" onsubmit="return submitRegisterForm(this)">
+            <div class="row">
+                <input name="login" placeholder="Login"
+                       type="text" required minlength="1">
+            </div>
+            <div class="row">
+                <input name="email" placeholder="Email"
+                       type="email" required>
+            </div>
+            <div class="row">
+                <input name="password" placeholder="Password"
+                       type="password" required minlength="8">
+            </div>
+            <div class="row">
+                <input type="submit" placeholder="Register">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="columns">
+
+    <div class="fetch requests">
+        <p>
+            Browser requests responses
+        </p>
+        <div id="responses"></div>
+        <div id="error"></div>
+    </div>
+
+    <div class="registration events">
+        <p>
+            Server events <a href="#" onclick="clearEvents()">Clear</a>
+        </p>
+        <div id="server-events"></div>
+    </div>
+</div>
+
+
+<script>
+    let titleNode = document.getElementById("title");
+    let errorNode = document.getElementById("error");
+    let responsesNode = document.getElementById("responses");
+    let serverEventsNode = document.getElementById("server-events");
+
+    function clearNode(node) {
+        while (node.hasChildNodes()) {
+            node.removeChild(node.lastChild);
+        }
+    }
+
+    function clearEvents() {
+        clearNode(serverEventsNode);
+    }
+
+    function readResponse(response) {
+        let reader = response.body.getReader();
+        let result = Uint8Array.of();
+        return reader.read()
+            .then(function processText({done, value}) {
+                // Result objects contain two properties:
+                // done  - true if the stream has already given you all its data.
+                // value - some data. Always undefined when done is true.
+                if (done) {
+                    return new TextDecoder("utf-8").decode(result);
+                }
+                result = Uint8Array.of(...result.values(), ...value.values());
+
+                // Read some more, and call this function again
+                return reader.read().then(processText);
+            });
+    }
+
+    function addEvent(id, data) {
+        let eventNode = document.createElement("div");
+        eventNode.classList.add("event");
+        let eventIdNode = document.createElement("span");
+        eventIdNode.textContent = id;
+        eventIdNode.classList.add("id");
+        let eventDataNode = document.createElement("span");
+        eventDataNode.textContent = data;
+        eventDataNode.classList.add("data");
+        eventNode.appendChild(eventIdNode);
+        eventNode.appendChild(eventDataNode);
+        serverEventsNode.appendChild(eventNode);
+    }
+
+    function addResponse(name, data) {
+        let responseNode = document.createElement("div");
+        responseNode.classList.add("response");
+        let responseName = document.createElement("span");
+        responseName.textContent = name;
+        responseName.classList.add("name");
+        let responseDataNode = document.createElement("span");
+        responseDataNode.textContent = data;
+        responseDataNode.classList.add("data");
+        responseNode.appendChild(responseName);
+        responseNode.appendChild(responseDataNode);
+        responsesNode.appendChild(responseNode);
+    }
+
+    function addError(description) {
+        let errorTextNode = document.createTextNode(description);
+        errorNode.appendChild(errorTextNode);
+    }
+
+
+    function getAppName() {
+        let headers = new Headers();
+        headers.set('Accept', `text/plain`);
+        return fetch(`${window.location.origin}/example/appName`, {
+            method: 'GET',
+            headers: headers,
+        }).then(response => {
+            if (!response.ok) {
+                throw 'App name fetch failed: ' + response.status;
+            }
+            return readResponse(response);
+        });
+    }
+
+    function submitForm(form) {
+        let login = form.login.value;
+        let password = form.password.value;
+        let basicBase64 = btoa(`${login}:${password}`);
+
+        clearNode(responsesNode);
+        clearNode(errorNode);
+
+        var jwtToken = null;
+
+        return getAppName().then(appName => {
+            let headers = new Headers();
+            headers.set('Authorization', `Basic ${basicBase64}`);
+            headers.set('Accept', `text/plain`);
+            return fetch(`https://localhost:8443/token/${appName}`, {
+                method: 'GET',
+                headers: headers,
+            });
+        }).then(response => {
+            if (!response.ok) {
+                throw 'Login failed: ' + response.status;
+            }
+            return readResponse(response);
+        }).then(tokenBody => {
+            jwtToken = tokenBody;
+            addResponse("token", jwtToken);
+
+            let headers = new Headers();
+            headers.set('Authorization', `Bearer ${jwtToken}`);
+            headers.set('Accept', `application/json`);
+            return fetch(`${window.location.origin}/example/jwt`, {
+                method: 'GET',
+                headers: headers
+            });
+        }).then(jwtResponse => {
+            if (!jwtResponse.ok) {
+                throw 'Fetch jwt failed: ' + jwtResponse.status;
+            }
+            return readResponse(jwtResponse);
+        }).then(jwt => {
+            addResponse("Parsed jwt", jwt);
+
+            let headers = new Headers();
+            headers.set('Authorization', `Bearer ${jwtToken}`);
+            headers.set('Accept', `application/json`);
+            return fetch(`${window.location.origin}/example/user`, {
+                method: 'GET',
+                headers: headers
+            });
+        }).then(userResponse => {
+            if (!userResponse.ok) {
+                throw 'Fetch user failed: ' + userResponse.status;
+            }
+            return readResponse(userResponse);
+        }).then(user => {
+            addResponse("App user", user);
+        }).catch(error => {
+            addError(error);
+        });
+    }
+
+    function submitRegisterForm(form) {
+        let login = form.login.value;
+        let email = form.email.value;
+        let password = form.password.value;
+
+        let registration = {
+            name: login,
+            email: email,
+            password: password
+        };
+        let registrationJson = JSON.stringify(registration);
+
+        clearNode(responsesNode);
+        clearNode(errorNode);
+
+        return getAppName().then(appName => {
+            let headers = new Headers();
+            headers.set('Accept', `application/json`);
+            headers.set('Content-TYpe', `application/json`);
+            return fetch(`${window.location.origin}/example/user`, {
+                method: 'POST',
+                headers: headers,
+                body: registrationJson
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw 'Registration failed: ' + response.status;
+            }
+            return readResponse(response);
+        }).then(registrationResponseBody => {
+            addResponse("Created user", registrationResponseBody);
+        }).catch(error => {
+            addError(error);
+        });
+    }
+
+    function onPasswordResetClick() {
+        let form = document.getElementById('loginForm');
+        let login = form.login.value;
+        let password = form.password.value;
+
+        clearNode(responsesNode);
+        clearNode(errorNode);
+
+        let formValid = form.reportValidity();
+        if (login == null || password == null || !formValid) {
+            addError("Must fill the login form to reset password");
+            return;
+        }
+
+        let headers = new Headers();
+        headers.set('Accept', `application/json`);
+        headers.set('Content-TYpe', `text/plain`);
+        return fetch(`${window.location.origin}/example/user/password`, {
+            method: 'POST',
+            headers: headers,
+            body: login
+        }).then(response => {
+            if (!response.ok) {
+                throw 'Password reset failed: ' + response.status;
+            }
+            return readResponse(response);
+        }).then(passwordResetResponse => {
+            addResponse("Password reset token", passwordResetResponse);
+            let tokenResponse = JSON.parse(passwordResetResponse);
+            let token = tokenResponse.token;
+            let userId = tokenResponse.userId;
+
+            // Send a reset request to authenticator
+            let resetRequest = {
+                password: password,
+                resetToken: token,
+                userId: userId,
+            };
+            let resetRequestBody = JSON.stringify(resetRequest);
+            let headers = new Headers();
+            headers.set('Content-TYpe', `application/json`);
+            return fetch(`https://localhost:8443/password/reset`, {
+                method: 'POST',
+                headers: headers,
+                body: resetRequestBody
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw 'Password reset failed: ' + response.status;
+            }
+            addResponse("Password resetted", `You can login using ${login}:${password}`);
+        }).catch(error => {
+            addError(error);
+        });
+    }
+
+
+
+    const eventsSource = new EventSource(`${window.location.origin}/example/events`);
+    eventsSource.addEventListener("example-rs", event => {
+        addEvent("example-rs", event.data);
+    }, false);
+    eventsSource.addEventListener("events-rs", event => {
+        addEvent("events-rs", event.data);
+    }, false);
+    eventsSource.addEventListener("rest-client", event => {
+        addEvent("rest-client", event.data);
+    }, false);
+    getAppName().then(appName => {
+        let titleValue = document.createTextNode(appName);
+        titleNode.appendChild(titleValue);
+    });
+
+
+</script>
+</body>
+</html>

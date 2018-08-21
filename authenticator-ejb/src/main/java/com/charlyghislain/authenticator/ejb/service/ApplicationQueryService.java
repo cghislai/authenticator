@@ -36,6 +36,7 @@ public class ApplicationQueryService {
     @Inject
     private JwtTokenService tokenService;
 
+
     public Optional<Application> findActiveApplicationByName(String name) {
         ApplicationFilter ApplicationFilter = new ApplicationFilter();
         ApplicationFilter.setActive(true);
@@ -43,6 +44,12 @@ public class ApplicationQueryService {
         return this.findApplication(ApplicationFilter);
     }
 
+    public Optional<Application> findActiveApplicationByHost(String host) {
+        ApplicationFilter ApplicationFilter = new ApplicationFilter();
+        ApplicationFilter.setActive(true);
+        ApplicationFilter.setApplicationUrl(host);
+        return this.findApplication(ApplicationFilter);
+    }
     public Optional<Application> findApplicationById(Long id) {
         ApplicationFilter ApplicationFilter = new ApplicationFilter();
         ApplicationFilter.setId(id);

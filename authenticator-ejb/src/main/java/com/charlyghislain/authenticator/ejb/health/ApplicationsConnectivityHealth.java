@@ -42,7 +42,7 @@ public class ApplicationsConnectivityHealth implements HealthCheck {
                 .allMatch(ApplicationAuthenticatorAuthorizationHealth::isAuthorizationHealthy);
 
         HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.builder()
-                .name("applicationConnectivity")
+                .name("application connectivity")
                 .state(allhealthy);
 
         applicationHealths

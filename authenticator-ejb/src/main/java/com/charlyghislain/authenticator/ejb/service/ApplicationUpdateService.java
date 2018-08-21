@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Stateless
@@ -28,12 +29,78 @@ public class ApplicationUpdateService {
     @Inject
     private RsaKeyPairUpdateService rsaKeyPairUpdateService;
 
+
     public Application createApplication(@Valid Application newApplication) throws NameAlreadyExistsException {
+        String name = newApplication.getName();
+        String endpointUrl = newApplication.getEndpointUrl();
+        boolean active = newApplication.isActive();
+        boolean addedUsersAreActive = newApplication.isAddedUsersAreActive();
+        boolean canResetUserPassword = newApplication.isCanResetUserPassword();
+        boolean canVerifyUserEmail = newApplication.isCanVerifyUserEmail();
+        boolean existingUsersAreAddedOnTokenRequest = newApplication.isExistingUsersAreAddedOnTokenRequest();
+
+        checkDuplicateName(name);
+
         Application application = new Application();
-        updateExistingApplication(application, newApplication);
+        application.setActive(active);
+        application.setName(name);
+        application.setEndpointUrl(endpointUrl);
+        application.setCreationTime(LocalDateTime.now());
+        application.setAddedUsersAreActive(addedUsersAreActive);
+        application.setCanResetUserPassword(canResetUserPassword);
+        application.setCanVerifyUserEmail(canVerifyUserEmail);
+        application.setExistingUsersAreAddedOnTokenRequest(existingUsersAreAddedOnTokenRequest);
 
         Application managedApplication = saveApplication(application);
 
+        createNewApplicationKeyPair(managedApplication);
+        return managedApplication;
+    }
+
+
+    public Application updateApplication(@NotNull Application existingApplication,
+                                         @Valid Application newApplication) throws NameAlreadyExistsException {
+        String name = newApplication.getName();
+        String endpointUrl = newApplication.getEndpointUrl();
+        boolean active = newApplication.isActive();
+        boolean addedUsersAreActive = newApplication.isAddedUsersAreActive();
+        boolean canResetUserPassword = newApplication.isCanResetUserPassword();
+        boolean canVerifyUserEmail = newApplication.isCanVerifyUserEmail();
+        boolean existingUsersAreAddedOnTokenRequest = newApplication.isExistingUsersAreAddedOnTokenRequest();
+
+        checkDuplicateName(existingApplication, name);
+
+        existingApplication.setActive(active);
+        existingApplication.setName(name);
+        existingApplication.setEndpointUrl(endpointUrl);
+        existingApplication.setAddedUsersAreActive(addedUsersAreActive);
+        existingApplication.setCanResetUserPassword(canResetUserPassword);
+        existingApplication.setCanVerifyUserEmail(canVerifyUserEmail);
+        existingApplication.setExistingUsersAreAddedOnTokenRequest(existingUsersAreAddedOnTokenRequest);
+
+        return saveApplication(existingApplication);
+    }
+
+    private void checkDuplicateName(Application existingApplication, String newName) throws NameAlreadyExistsException {
+        ApplicationFilter filter = new ApplicationFilter();
+        filter.setName(newName);
+        boolean hasDuplicateName = applicationQueryService.findAllApplications(filter)
+                .stream()
+                .anyMatch(application -> !application.equals(existingApplication));
+        if (hasDuplicateName) {
+            throw new NameAlreadyExistsException();
+        }
+    }
+
+    private void checkDuplicateName(String name) throws NameAlreadyExistsException {
+        boolean hasDuplicate = applicationQueryService.findActiveApplicationByName(name).isPresent();
+        if (hasDuplicate) {
+            throw new NameAlreadyExistsException();
+        }
+    }
+
+
+    private void createNewApplicationKeyPair(Application managedApplication) {
         RsaKeyPair rsaKeyPair = new RsaKeyPair();
         rsaKeyPair.setApplication(managedApplication);
         rsaKeyPair.setActive(true);
@@ -48,37 +115,6 @@ public class ApplicationUpdateService {
             rsaKeyPairUpdateService.createNewKey(rsaKeyPair);
         } catch (NameAlreadyExistsException e) {
             throw new AuthenticatorRuntimeException("A key name " + keyName + " already exists");
-        }
-        return managedApplication;
-    }
-
-    public Application updateApplication(@NotNull Application existingApplication,
-                                         @Valid Application newApplication) throws NameAlreadyExistsException {
-        updateExistingApplication(existingApplication, newApplication);
-        return saveApplication(existingApplication);
-    }
-
-
-    private void updateExistingApplication(Application existingApplication, Application applicationUpdate) throws NameAlreadyExistsException {
-        String name = applicationUpdate.getName();
-        String endpointUrl = applicationUpdate.getEndpointUrl();
-        boolean active = applicationUpdate.isActive();
-
-        checkDuplicateName(existingApplication, name);
-
-        existingApplication.setActive(active);
-        existingApplication.setName(name);
-        existingApplication.setEndpointUrl(endpointUrl);
-    }
-
-    private void checkDuplicateName(Application existingApplication, String newName) throws NameAlreadyExistsException {
-        ApplicationFilter filter = new ApplicationFilter();
-        filter.setName(newName);
-        boolean hasDuplicateName = applicationQueryService.findAllApplications(filter)
-                .stream()
-                .anyMatch(application -> !application.equals(existingApplication));
-        if (hasDuplicateName) {
-            throw new NameAlreadyExistsException();
         }
     }
 

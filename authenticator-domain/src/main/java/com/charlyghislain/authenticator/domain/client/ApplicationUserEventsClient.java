@@ -8,5 +8,8 @@ public interface ApplicationUserEventsClient {
 
     void notifyUserAdded(String authToken, UserApplication userApplication);
 
+    void notifyEmailVerified(String authToken, UserApplication userApplication);
+
     void notifyUserRemoved(String authToken, Application application, Long userId);
+
 }

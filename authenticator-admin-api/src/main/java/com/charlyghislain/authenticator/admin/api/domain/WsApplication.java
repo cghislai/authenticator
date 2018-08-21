@@ -5,6 +5,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 
 public class WsApplication implements Serializable {
 
@@ -17,6 +18,17 @@ public class WsApplication implements Serializable {
     private String endpointUrl;
     @NotNull
     private Boolean active;
+    @Nullable
+    @NullableField
+    private ZonedDateTime creationDateTime;
+    @NotNull
+    private Boolean canResetUserPassword;
+    @NotNull
+    private Boolean canVerifyUserEmail;
+    @NotNull
+    private Boolean addedUsersAreActive;
+    @NotNull
+    private Boolean existingUsersAreAddedOnTokenRequest;
 
     public Long getId() {
         return id;
@@ -50,4 +62,47 @@ public class WsApplication implements Serializable {
         this.endpointUrl = endpointUrl;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public ZonedDateTime getCreationDateTime() {
+        return creationDateTime;
+    }
+
+    public void setCreationDateTime(ZonedDateTime creationDateTime) {
+        this.creationDateTime = creationDateTime;
+    }
+
+    public Boolean getCanResetUserPassword() {
+        return canResetUserPassword;
+    }
+
+    public void setCanResetUserPassword(Boolean canResetUserPassword) {
+        this.canResetUserPassword = canResetUserPassword;
+    }
+
+    public Boolean getCanVerifyUserEmail() {
+        return canVerifyUserEmail;
+    }
+
+    public void setCanVerifyUserEmail(Boolean canVerifyUserEmail) {
+        this.canVerifyUserEmail = canVerifyUserEmail;
+    }
+
+    public Boolean getAddedUsersAreActive() {
+        return addedUsersAreActive;
+    }
+
+    public void setAddedUsersAreActive(Boolean addedUsersAreActive) {
+        this.addedUsersAreActive = addedUsersAreActive;
+    }
+
+    public Boolean getExistingUsersAreAddedOnTokenRequest() {
+        return existingUsersAreAddedOnTokenRequest;
+    }
+
+    public void setExistingUsersAreAddedOnTokenRequest(Boolean existingUsersAreAddedOnTokenRequest) {
+        this.existingUsersAreAddedOnTokenRequest = existingUsersAreAddedOnTokenRequest;
+    }
 }

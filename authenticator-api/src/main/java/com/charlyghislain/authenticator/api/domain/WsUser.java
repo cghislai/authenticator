@@ -75,4 +75,5 @@ public class WsUser implements Serializable {
     public void setAdmin(boolean admin) {
         this.admin = admin;
     }
+
 }

@@ -29,6 +29,22 @@
             <column name="active" type="BIT">
                 <constraints nullable="false"/>
             </column>
+            <column name="creation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="can_reset_user_password" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="can_verify_user_email" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="added_users_are_active" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="existing_users_are_added_on_token_request" type="BIT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -96,6 +112,9 @@
             <column name="email_verified" type="BIT">
                 <constraints nullable="false"/>
             </column>
+            <column name="creation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createView viewName="user_roles">
@@ -127,6 +146,9 @@
             <column name="active" type="BIT">
                 <constraints nullable="false"/>
             </column>
+            <column name="creation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="auth_user_application_user_id"
                                  baseTableName="auth_user_application" baseColumnNames="user_id"
@@ -134,5 +156,54 @@
         <addForeignKeyConstraint constraintName="auth_user_application_id"
                                  baseTableName="auth_user_application" baseColumnNames="application_id"
                                  referencedTableName="application" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5-email-verification-token" author="cghilai">
+        <createTable tableName="email_verification_token">
+            <column name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="token" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_application_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="email_verification_token_user_application_id"
+                                 baseTableName="email_verification_token" baseColumnNames="user_application_id"
+                                 referencedTableName="auth_user_application" referencedColumnNames="id"/>
+
+    </changeSet>
+
+
+    <changeSet id="6-password-reset-token" author="cghilai">
+        <createTable tableName="password_reset_token">
+            <column name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="token" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="password_reset_token_user_id"
+                                 baseTableName="password_reset_token" baseColumnNames="user_id"
+                                 referencedTableName="auth_user" referencedColumnNames="id"/>
+
     </changeSet>
 </databaseChangeLog>

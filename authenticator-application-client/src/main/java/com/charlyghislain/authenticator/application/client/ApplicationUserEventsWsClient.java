@@ -33,6 +33,15 @@ public class ApplicationUserEventsWsClient implements ApplicationUserEventsClien
         eventResource.userAdded(wsApplicationUser);
     }
 
+    @Override
+    public void notifyEmailVerified(String authToken, UserApplication userApplication) {
+        WsApplicationUser wsApplicationUser = wsApplicationUserConverter.toWsApplicationUser(userApplication);
+
+        Application application = userApplication.getApplication();
+        UserEventResource eventResource = restClientProvider.createResource(authToken, application, UserEventResource.class);
+        eventResource.userEmailVerified(wsApplicationUser);
+    }
+
     public void notifyUserRemoved(String authToken, Application application, Long userId) {
         UserEventResource eventResource = restClientProvider.createResource(authToken, application, UserEventResource.class);
         eventResource.userRemoved(userId);

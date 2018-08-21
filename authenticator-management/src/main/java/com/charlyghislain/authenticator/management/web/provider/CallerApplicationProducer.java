@@ -5,7 +5,7 @@ import com.charlyghislain.authenticator.ejb.service.CallerQueryService;
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebError;
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebException;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ public class CallerApplicationProducer {
     private CallerQueryService callerQueryService;
 
     @Produces
-    @RequestScoped
+    @Dependent
     @CallerManagedApplication
     public Application getCallerManagedApplicationOrThrow() {
         return callerQueryService.findCallerApplication()

@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.management.api;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
 import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
 import com.charlyghislain.authenticator.management.api.domain.WsPagination;
+import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
 import com.charlyghislain.authenticator.management.api.domain.WsResultList;
 import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
 
@@ -37,6 +38,14 @@ public interface UserResource {
     @Path("/{id}")
     WsApplicationUser updateUser(@PathParam("id") Long userId, WsApplicationUser user);
 
+    @PUT
+    @Path("/{id}/password")
+    WsApplicationUser updateUserPassword(@PathParam("id") Long userId, String password);
+
+    @GET
+    @Path("/{id}/password/resetToken")
+    WsPasswordResetToken createNewPasswordResetToken(@PathParam("id") Long userId);
+
     @DELETE
     @Path("/{id}")
     void forgetUser(@PathParam("id") Long userId);
@@ -47,8 +56,6 @@ public interface UserResource {
 
     @POST
     @Path("/{id}/email/verification")
-    void checkEmailVerification(@PathParam("id") Long userId,
-                                String verificationToken);
-
+    void checkEmailVerification(@PathParam("id") Long userId, String verificationToken);
 
 }

@@ -12,6 +12,8 @@ public class ApplicationFilter {
     private String name;
     @Nullable
     private String nameContains;
+    @Nullable
+    private String applicationUrl;
 
     public Long getId() {
         return id;
@@ -43,5 +45,13 @@ public class ApplicationFilter {
 
     public void setNameContains(String nameContains) {
         this.nameContains = nameContains;
+    }
+
+    public String getApplicationUrl() {
+        return applicationUrl;
+    }
+
+    public void setApplicationUrl(String applicationUrl) {
+        this.applicationUrl = applicationUrl;
     }
 }

@@ -24,6 +24,7 @@ public class AuthenticatorWebApplication extends Application {
         classes.add(InfoResourceController.class);
         classes.add(LoggedUserResourceController.class);
         classes.add(TokenResourceController.class);
+        classes.add(PasswordResourceController.class);
 
         classes.add(AuthenticatorWebExceptionMapper.class);
         classes.add(CrossOriginResourceSharingRequestFilter.class);

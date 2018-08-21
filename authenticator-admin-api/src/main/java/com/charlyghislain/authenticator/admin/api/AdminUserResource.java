@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.admin.api.domain.WsUserFilter;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -47,5 +48,13 @@ public interface AdminUserResource {
     @Path("/{id}/application/list")
     WsResultList<WsUserApplication> listUserApplications(@PathParam("id") Long userId,
                                                          @BeanParam WsPagination wsPagination);
+
+    @PUT
+    @Path("/{id}/application/{appId}/state/active")
+    WsUserApplication activateUserApplication(@PathParam("id") Long userId, @PathParam("appId") Long applicationId);
+
+    @DELETE
+    @Path("/{id}/application/{appId}/state/active")
+    WsUserApplication deactivateUserApplication(@PathParam("id") Long userId, @PathParam("appId") Long applicationId);
 
 }

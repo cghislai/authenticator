@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "auth_user_application")
@@ -33,6 +34,10 @@ public class UserApplication implements WithId {
 
     @Column(name = "active")
     private boolean active;
+
+    @NotNull
+    @Column(name = "creation_time")
+    private LocalDateTime creationTime;
 
     public Long getId() {
         return id;
@@ -64,6 +69,14 @@ public class UserApplication implements WithId {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 
     @Override

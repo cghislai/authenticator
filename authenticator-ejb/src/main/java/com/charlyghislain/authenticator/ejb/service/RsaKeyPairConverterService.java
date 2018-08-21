@@ -3,8 +3,11 @@ package com.charlyghislain.authenticator.ejb.service;
 
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
+import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -13,6 +16,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -25,27 +29,33 @@ import java.util.Base64;
 @Stateless
 public class RsaKeyPairConverterService {
 
+    private static final int RSA_KEY_SIZE = 4096;
+
+    @Inject
+    @ConfigProperty(name = ConfigConstants.UNSAFE_FEATURES_ENABLED, defaultValue = "false")
+    private boolean unsafeFeaturesEnabled;
+
     public RsaKeyPair generateNewKeyPair() {
-        KeyPairGenerator keyPairGenerator = this.getKeyPairGenerator();
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        try {
+            SecureRandom secureRandom = SecureRandom.getInstanceStrong();
+            return generateKeyPair(secureRandom);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        BigInteger modulus = privateKey.getModulus();
-        BigInteger privateExponent = privateKey.getPrivateExponent();
-        BigInteger publicExponent = publicKey.getPublicExponent();
-
-        byte[] modulusBytes = modulus.toByteArray();
-        byte[] privateExponentBytes = privateExponent.toByteArray();
-        byte[] publicExponentBytes = publicExponent.toByteArray();
-
-        RsaKeyPair rsaKeyPair = new RsaKeyPair();
-        rsaKeyPair.setCreationTime(LocalDateTime.now());
-        rsaKeyPair.setModulus(modulusBytes);
-        rsaKeyPair.setPrivateExponent(privateExponentBytes);
-        rsaKeyPair.setPublicExponent(publicExponentBytes);
-        rsaKeyPair.setActive(true);
-        return rsaKeyPair;
+    @Deprecated
+    public RsaKeyPair generateNewKeyPair(byte[] seed) {
+        if (!unsafeFeaturesEnabled) {
+            throw new RuntimeException("Attempt to use a deterministic random generator without unsafe feature enabled");
+        }
+        try {
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(seed);
+            return generateKeyPair(secureRandom);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -100,6 +110,31 @@ public class RsaKeyPairConverterService {
             throw new AuthenticatorRuntimeException("Unable to load private key", e);
         }
     }
+
+    private RsaKeyPair generateKeyPair(SecureRandom secureRandom) {
+        KeyPairGenerator keyPairGenerator = this.getKeyPairGenerator();
+        keyPairGenerator.initialize(RSA_KEY_SIZE, secureRandom);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        BigInteger modulus = privateKey.getModulus();
+        BigInteger privateExponent = privateKey.getPrivateExponent();
+        BigInteger publicExponent = publicKey.getPublicExponent();
+
+        byte[] modulusBytes = modulus.toByteArray();
+        byte[] privateExponentBytes = privateExponent.toByteArray();
+        byte[] publicExponentBytes = publicExponent.toByteArray();
+
+        RsaKeyPair rsaKeyPair = new RsaKeyPair();
+        rsaKeyPair.setCreationTime(LocalDateTime.now());
+        rsaKeyPair.setModulus(modulusBytes);
+        rsaKeyPair.setPrivateExponent(privateExponentBytes);
+        rsaKeyPair.setPublicExponent(publicExponentBytes);
+        rsaKeyPair.setActive(true);
+        return rsaKeyPair;
+    }
+
 
     private KeyFactory getKeyFactory() {
         try {

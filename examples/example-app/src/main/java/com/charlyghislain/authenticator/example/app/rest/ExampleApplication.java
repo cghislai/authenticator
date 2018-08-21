@@ -1,5 +1,6 @@
-package com.charlyghislain.authenticator.example.app;
+package com.charlyghislain.authenticator.example.app.rest;
 
+import com.charlyghislain.authenticator.example.app.ApplicationRoles;
 import org.eclipse.microprofile.auth.LoginConfig;
 
 import javax.annotation.security.DeclareRoles;
@@ -10,8 +11,9 @@ import java.util.Set;
 
 @ApplicationPath("")
 @LoginConfig(authMethod = "MP-JWT")
-@DeclareRoles({ApplicationRoles.EXAMPLE_ROLE, ApplicationRoles.AUTHNETICATOR_APP_ROLE})
+@DeclareRoles({ApplicationRoles.EXAMPLE_ROLE, ApplicationRoles.AUTHENTICATOR_APP_ROLE})
 public class ExampleApplication extends Application {
+
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();

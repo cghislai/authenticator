@@ -1,12 +1,17 @@
 package com.charlyghislain.authenticator.application.api.domain;
 
+import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.Map;
 
 public class WsHealthCheckStatus {
 
+    @NotNull
     private String name;
+    @NotNull
     private WsHealthStatus state;
-    private Map<String, Object> data;
+    @NotNull
+    private Map<String, Object> data = new HashMap<>();
 
     public String getName() {
         return name;

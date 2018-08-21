@@ -9,6 +9,10 @@ import com.charlyghislain.authenticator.domain.domain.exception.KeyScopeChangedE
 import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
+import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Stateless
@@ -23,6 +29,7 @@ import java.util.Optional;
 public class RsaKeyPairUpdateService {
 
 
+    private static final Logger LOG = LoggerFactory.getLogger(RsaKeyPairUpdateService.class);
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -34,6 +41,17 @@ public class RsaKeyPairUpdateService {
     @Inject
     private SigningKKeyPairsProvider signingKKeyPairsProvider;
 
+    @Inject
+    @ConfigProperty(name = ConfigConstants.UNSAFE_FEATURES_ENABLED, defaultValue = "false")
+    private boolean unsafeFeaturesEnabled;
+    @Inject
+    @ConfigProperty(name = ConfigConstants.UNSAFE_DETERMINISTIC_KEYS, defaultValue = "false")
+    private boolean unsafeDeterministicKeys;
+    @Inject
+    @ConfigProperty(name = ConfigConstants.AUTHENTICATOR_NAME)
+    private String authenticatorName;
+
+
     public RsaKeyPair createNewKey(RsaKeyPair newKey) throws NameAlreadyExistsException {
         String name = newKey.getName();
         boolean forApplicationSecrets = newKey.isForApplicationSecrets();
@@ -43,11 +61,12 @@ public class RsaKeyPairUpdateService {
 
         checkDuplicateName(name);
 
-        RsaKeyPair createdKey = rsaKeyPairConverterService.generateNewKeyPair();
+        RsaKeyPair createdKey = generateKeyPair(newKey);
         createdKey.setActive(active);
         createdKey.setName(name);
         createdKey.setForApplicationSecrets(forApplicationSecrets);
         createdKey.setApplication(keyApplication.orElse(null));
+        createdKey.setCreationTime(LocalDateTime.now());
 
         RsaKeyPair managedKeyPair = saveRsaKeyPair(createdKey);
         if (signingKey && managedKeyPair.isActive()) {
@@ -56,7 +75,7 @@ public class RsaKeyPairUpdateService {
         return managedKeyPair;
     }
 
-    public RsaKeyPair updateKey(@NotNull RsaKeyPair existingKey, @Valid RsaKeyPair keyUpdate) throws NameAlreadyExistsException, KeyScopeChangedException, KeyIsLastActiveInScopeException, CannotDeactivateSigningKey {
+    public RsaKeyPair updateKey(@NotNull RsaKeyPair existingKey, RsaKeyPair keyUpdate) throws NameAlreadyExistsException, KeyScopeChangedException, KeyIsLastActiveInScopeException, CannotDeactivateSigningKey {
         String name = keyUpdate.getName();
         boolean forApplicationSecrets = keyUpdate.isForApplicationSecrets();
         Optional<Application> keyApplication = keyUpdate.getApplication();
@@ -81,8 +100,8 @@ public class RsaKeyPairUpdateService {
 
     public RsaKeyPair setSigningKey(RsaKeyPair keyPair) {
         KeyFilter keyFilter = new KeyFilter();
-        keyFilter.setSigningKey(false);
-        keyFilter.setForApplication(keyPair.isForApplicationSecrets());
+        keyFilter.setSigningKey(true);
+        keyFilter.setForApplicationSecrets(keyPair.isForApplicationSecrets());
         keyFilter.setApplication(keyPair.getApplication().orElse(null));
         ResultList<RsaKeyPair> previousSigningKeys = rsaKeyPairQueryService.findAllRsaKeyPairs(keyFilter);
 
@@ -111,7 +130,7 @@ public class RsaKeyPairUpdateService {
         }
         Boolean isSameScope = applicationScope
                 .map(application -> application.equals(existingKey.getApplication().orElse(null)))
-                .orElse(false);
+                .orElse(true); // Both empty
         if (!isSameScope) {
             throw new KeyScopeChangedException();
         }
@@ -183,7 +202,55 @@ public class RsaKeyPairUpdateService {
         }
     }
 
-    private RsaKeyPair saveRsaKeyPair(RsaKeyPair rsaKeyPair) {
+
+    private RsaKeyPair generateKeyPair(RsaKeyPair keyPair) {
+        if (unsafeFeaturesEnabled && unsafeDeterministicKeys) {
+            if (keyPair.getApplication().isPresent()) {
+                return this.generateUnsafeApplicationKeyPair(keyPair.getApplication().get());
+            }
+            if (keyPair.isForApplicationSecrets()) {
+                return this.generateUnsafeApplicationSecretsKeyPair();
+            } else {
+                return this.generateUnsafeAuthenticatorKeyPair();
+            }
+        }
+        return rsaKeyPairConverterService.generateNewKeyPair();
+    }
+
+
+    private RsaKeyPair generateUnsafeAuthenticatorKeyPair() {
+        String seedString = authenticatorName;
+        LOG.warn("Generating authenticator key pair using {} as a seed", seedString);
+        return generateUnsafeKeyFromSeed(seedString);
+    }
+
+    private RsaKeyPair generateUnsafeApplicationSecretsKeyPair() {
+        String seedString = authenticatorName + "-app-secrets";
+        LOG.warn("Generating key pair for application secrets using {} as a seed", seedString);
+        return generateUnsafeKeyFromSeed(seedString);
+    }
+
+
+    private RsaKeyPair generateUnsafeApplicationKeyPair(Application application) {
+        String seedString = authenticatorName + "-app";
+        LOG.warn("Generating key pair for application {} using {} name as a seed", application.getName(), seedString);
+        return generateUnsafeKeyFromSeed(seedString);
+    }
+
+    private RsaKeyPair generateUnsafeKeyFromSeed(String seedString) {
+        try {
+            byte[] keySeed = seedString.getBytes("UTF-8");
+            RsaKeyPair rsaKeyPair = rsaKeyPairConverterService.generateNewKeyPair(keySeed);
+            String publicKeyPem = rsaKeyPairConverterService.encodePublicKeyToPem(rsaKeyPair);
+            LOG.info("Generated public key:");
+            LOG.info(publicKeyPem);
+            return rsaKeyPair;
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private RsaKeyPair saveRsaKeyPair(@Valid RsaKeyPair rsaKeyPair) {
         RsaKeyPair managedRsaKeyPair = entityManager.merge(rsaKeyPair);
 
         signingKKeyPairsProvider.loadActiveKeys();

@@ -10,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "application")
@@ -32,6 +34,19 @@ public class Application implements WithId, WithName {
 
     @Column(name = "active")
     private boolean active;
+
+    @NotNull
+    @Column(name = "creation_time")
+    private LocalDateTime creationTime;
+
+    @Column(name = "can_reset_user_password")
+    private boolean canResetUserPassword = true;
+    @Column(name = "can_verify_user_email")
+    private boolean canVerifyUserEmail = true;
+    @Column(name = "added_users_are_active")
+    private boolean addedUsersAreActive = true;
+    @Column(name = "existing_users_are_added_on_token_request")
+    private boolean existingUsersAreAddedOnTokenRequest = true;
 
 
     public Long getId() {
@@ -64,6 +79,46 @@ public class Application implements WithId, WithName {
 
     public void setEndpointUrl(String endpointUrl) {
         this.endpointUrl = endpointUrl;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public boolean isCanResetUserPassword() {
+        return canResetUserPassword;
+    }
+
+    public void setCanResetUserPassword(boolean canResetUserPassword) {
+        this.canResetUserPassword = canResetUserPassword;
+    }
+
+    public boolean isCanVerifyUserEmail() {
+        return canVerifyUserEmail;
+    }
+
+    public void setCanVerifyUserEmail(boolean canVerifyUserEmail) {
+        this.canVerifyUserEmail = canVerifyUserEmail;
+    }
+
+    public boolean isAddedUsersAreActive() {
+        return addedUsersAreActive;
+    }
+
+    public void setAddedUsersAreActive(boolean addedUsersAreActive) {
+        this.addedUsersAreActive = addedUsersAreActive;
+    }
+
+    public boolean isExistingUsersAreAddedOnTokenRequest() {
+        return existingUsersAreAddedOnTokenRequest;
+    }
+
+    public void setExistingUsersAreAddedOnTokenRequest(boolean existingUsersAreAddedOnTokenRequest) {
+        this.existingUsersAreAddedOnTokenRequest = existingUsersAreAddedOnTokenRequest;
     }
 
     @Override

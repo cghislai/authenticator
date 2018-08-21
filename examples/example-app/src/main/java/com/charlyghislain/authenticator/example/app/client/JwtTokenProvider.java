@@ -1,4 +1,4 @@
-package com.charlyghislain.authenticator.example.app;
+package com.charlyghislain.authenticator.example.app.client;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;

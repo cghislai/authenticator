@@ -4,6 +4,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 
 public class WsUser implements Serializable {
 
@@ -18,6 +19,9 @@ public class WsUser implements Serializable {
     private boolean admin;
     private boolean emailVerified;
     private boolean passwordExpired;
+    @Nullable
+    @NullableField
+    private ZonedDateTime creationDateTime;
 
     public Long getId() {
         return id;
@@ -73,5 +77,13 @@ public class WsUser implements Serializable {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public ZonedDateTime getCreationDateTime() {
+        return creationDateTime;
+    }
+
+    public void setCreationDateTime(ZonedDateTime creationDateTime) {
+        this.creationDateTime = creationDateTime;
     }
 }

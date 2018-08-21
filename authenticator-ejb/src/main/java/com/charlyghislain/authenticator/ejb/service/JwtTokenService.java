@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.User;
+import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
 import com.charlyghislain.authenticator.domain.domain.exception.NoSigningKeyException;
 import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
@@ -57,7 +58,10 @@ public class JwtTokenService {
 
 
     @RolesAllowed({AuthenticatorConstants.ROLE_USER})
-    public String generateUserTokenForApplication(User user, Application application) throws NoSigningKeyException, UnauthorizedOperationException {
+    public String generateUserTokenForApplication(UserApplication userApplication) throws NoSigningKeyException, UnauthorizedOperationException {
+        User user = userApplication.getUser();
+        Application application = userApplication.getApplication();
+
         RsaKeyPair activeApplicationKey = signingKKeyPairsProvider.getApplicationSigningKey(application);
         Algorithm algorithm = getAlgorithm(activeApplicationKey);
 

@@ -3,12 +3,17 @@ package com.charlyghislain.authenticator.ejb.service;
 
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
+import com.charlyghislain.authenticator.domain.domain.UserApplication;
+import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
+import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,6 +31,16 @@ public class CallerQueryService {
 
     public Optional<User> findCallerUser() {
         return userQueryService.findUserByName(callerPrincipal.getName());
+    }
+
+    public List<UserApplication> findCallerUserApplications() throws UnauthorizedOperationException {
+        User user = userQueryService.findUserByName(callerPrincipal.getName())
+                .orElseThrow(UnauthorizedOperationException::new);
+        UserApplicationFilter userApplicationFilter = new UserApplicationFilter();
+        userApplicationFilter.setActive(null);
+        userApplicationFilter.setUser(user);
+        ResultList<UserApplication> userApplications = userQueryService.findAllUserApplications(userApplicationFilter);
+        return userApplications.getResults();
     }
 
     public Optional<Application> findCallerApplication() {
