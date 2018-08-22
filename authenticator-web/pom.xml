@@ -5,7 +5,7 @@
     <parent>
         <artifactId>authenticator-parent</artifactId>
         <groupId>com.charlyghislain.authenticator</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
             <artifactId>authenticator-application-client</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
             <artifactId>authenticator</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <classifier>classes</classifier>
         </dependency>
 
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
             <artifactId>authenticator-admin</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <classifier>classes</classifier>
         </dependency>
 
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
             <artifactId>authenticator-management</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <classifier>classes</classifier>
         </dependency>
 
