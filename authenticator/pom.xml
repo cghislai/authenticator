@@ -12,6 +12,11 @@
     <artifactId>authenticator</artifactId>
     <packaging>war</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Rest resources implementing authenticator-api</description>
+    <url>https://github.com/cghislai/authenticator</url>
+
+
     <dependencies>
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
@@ -58,17 +63,6 @@
             <artifactId>javax.persistence-api</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <attachClasses>true</attachClasses>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 
 </project>

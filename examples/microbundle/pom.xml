@@ -11,6 +11,9 @@
 
     <artifactId>microbundle</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>authenticator-web packaged in a payara-micro executable jar</description>
+    <url>https://github.com/cghislai/authenticator</url>
 
     <profiles>
         <profile>

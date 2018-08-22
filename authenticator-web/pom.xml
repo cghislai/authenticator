@@ -12,6 +12,10 @@
     <artifactId>authenticator-web</artifactId>
     <packaging>war</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Deployable war containing all rest resources</description>
+    <url>https://github.com/cghislai/authenticator</url>
+
     <dependencies>
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
@@ -90,16 +94,5 @@
             <artifactId>jaxrs-api</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <attachClasses>true</attachClasses>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>examples</artifactId>
+        <groupId>com.charlyghislain.authenticator</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>example-ear</artifactId>
+    <packaging>ear</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Example of packaging the authenticator modules as an EAR archive</description>
+    <url>https://github.com/cghislai/authenticator</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <version>8</version>
+                    <modules>
+                        <ejbModule>
+                            <groupId>com.charlyghislain.authenticator</groupId>
+                            <artifactId>authenticator-ejb</artifactId>
+                        </ejbModule>
+                        <webModule>
+                            <groupId>com.charlyghislain.authenticator</groupId>
+                            <artifactId>authenticator</artifactId>
+                            <contextRoot>/</contextRoot>
+                        </webModule>
+                        <webModule>
+                            <groupId>com.charlyghislain.authenticator</groupId>
+                            <artifactId>authenticator-management</artifactId>
+                            <contextRoot>/auth-management</contextRoot>
+                        </webModule>
+                        <webModule>
+                            <groupId>com.charlyghislain.authenticator</groupId>
+                            <artifactId>authenticator-admin</artifactId>
+                            <contextRoot>/admin</contextRoot>
+                        </webModule>
+                    </modules>
+                    <unpackTypes>ejb,war</unpackTypes>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <!--suppress MavenModelInspection -->
+                    <outputFileNameMapping>@{artifactId}@-@{version}@@{dashClassifier?}@.@{extension}@
+                    </outputFileNameMapping>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-application-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-application-client</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-management-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-management</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-admin-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-admin</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-domain</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.authenticator</groupId>
+            <artifactId>authenticator-ejb</artifactId>
+            <type>ejb</type>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -11,6 +11,10 @@
 
     <artifactId>authenticator-application-client</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Rest client for the application-api</description>
+    <url>https://github.com/cghislai/authenticator</url>
+
     <dependencies>
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>

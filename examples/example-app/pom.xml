@@ -12,6 +12,14 @@
     <artifactId>example-app</artifactId>
     <packaging>war</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>
+        Example application implementing the authenticator-application-api
+        and using the authenticator-management-api
+    </description>
+    <url>https://github.com/cghislai/authenticator</url>
+
+
     <dependencies>
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>
@@ -70,6 +78,17 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
     <profiles>
@@ -145,25 +164,25 @@
                                 <phase>package</phase>
                             </execution>
                             <!--<execution>-->
-                                <!--<id>test</id>-->
-                                <!--<goals>-->
-                                    <!--<goal>start</goal>-->
-                                <!--</goals>-->
-                                <!--<phase>verify</phase>-->
-                                <!--<configuration>-->
-                                    <!--<javaCommandLineOptions>-->
-                                        <!--<option>-->
-                                            <!--<value>-Xdebug</value>-->
-                                        <!--</option>-->
-                                        <!--<option>-->
-                                            <!--<key>-Xrunjdwp:transport</key>-->
-                                            <!--<value>dt_socket,server=y,suspend=y,address=5005</value>-->
-                                        <!--</option>-->
-                                        <!--<option>-->
-                                            <!--<value>-Xbootclasspath/p:examples/example-app/target/extracted-payaramicro/MICRO-INF/runtime/grizzly-npn-bootstrap.jar</value>-->
-                                        <!--</option>-->
-                                    <!--</javaCommandLineOptions>-->
-                                <!--</configuration>-->
+                            <!--<id>test</id>-->
+                            <!--<goals>-->
+                            <!--<goal>start</goal>-->
+                            <!--</goals>-->
+                            <!--<phase>verify</phase>-->
+                            <!--<configuration>-->
+                            <!--<javaCommandLineOptions>-->
+                            <!--<option>-->
+                            <!--<value>-Xdebug</value>-->
+                            <!--</option>-->
+                            <!--<option>-->
+                            <!--<key>-Xrunjdwp:transport</key>-->
+                            <!--<value>dt_socket,server=y,suspend=y,address=5005</value>-->
+                            <!--</option>-->
+                            <!--<option>-->
+                            <!--<value>-Xbootclasspath/p:examples/example-app/target/extracted-payaramicro/MICRO-INF/runtime/grizzly-npn-bootstrap.jar</value>-->
+                            <!--</option>-->
+                            <!--</javaCommandLineOptions>-->
+                            <!--</configuration>-->
                             <!--</execution>-->
                         </executions>
                         <configuration>

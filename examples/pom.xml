@@ -14,7 +14,11 @@
     <modules>
         <module>microbundle</module>
         <module>example-app</module>
+        <module>example-ear</module>
     </modules>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Examples</description>
+    <url>https://github.com/cghislai/authenticator</url>
 
 </project>

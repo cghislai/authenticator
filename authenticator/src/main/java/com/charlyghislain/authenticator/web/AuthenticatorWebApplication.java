@@ -13,7 +13,7 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("/")
+@ApplicationPath("")
 @DeclareRoles(AuthenticatorConstants.ROLE_USER)
 public class AuthenticatorWebApplication extends Application {
 

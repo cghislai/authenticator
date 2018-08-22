@@ -11,6 +11,10 @@
 
     <artifactId>authenticator-domain</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Shared domain objects</description>
+    <url>https://github.com/cghislai/authenticator</url>
+
     <dependencies>
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -37,5 +41,6 @@
             <artifactId>validation-api</artifactId>
         </dependency>
     </dependencies>
+
 
 </project>

@@ -11,6 +11,9 @@
 
     <artifactId>authenticator-admin-api</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Administration rest api - targeted to administrator users</description>
+    <url>https://github.com/cghislai/authenticator</url>
 
     <dependencies>
         <dependency>
@@ -36,37 +39,14 @@
             <plugin>
                 <groupId>cz.habarta.typescript-generator</groupId>
                 <artifactId>typescript-generator-maven-plugin</artifactId>
-                <version>2.5.423</version>
-                <executions>
-                    <execution>
-                        <id>generate-admin-api</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <excludeClassPatterns>
-                                <classPattern>java.io.**</classPattern>
-                                <classPattern>java.lang.**</classPattern>
-                            </excludeClassPatterns>
-                            <classPatterns>
-                                <classPattern>com.charlyghislain.authenticator.admin.api.**</classPattern>
-                            </classPatterns>
-                            <jsonLibrary>jackson2</jsonLibrary>
-                            <outputFile>target/npm/index.d.ts</outputFile>
-                            <outputKind>module</outputKind>
-                            <outputFileType>declarationFile</outputFileType>
-                            <optionalAnnotations>
-                                <annotation>com.charlyghislain.authenticator.admin.api.domain.NullableField</annotation>
-                            </optionalAnnotations>
-                            <mapClasses>asInterfaces</mapClasses>
-                            <mapEnum>asEnum</mapEnum>
-                            <mapDate>asString</mapDate>
-                            <generateNpmPackageJson>true</generateNpmPackageJson>
-                            <npmName>@charlyghislain/${project.artifactId}</npmName>
-                            <npmVersion>${project.version}</npmVersion>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <classPatterns>
+                        <classPattern>com.charlyghislain.authenticator.admin.api.**</classPattern>
+                    </classPatterns>
+                    <optionalAnnotations>
+                        <annotation>com.charlyghislain.authenticator.admin.api.domain.NullableField</annotation>
+                    </optionalAnnotations>
+                </configuration>
             </plugin>
         </plugins>
     </build>
