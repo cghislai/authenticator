@@ -3,8 +3,8 @@ pipeline {
     parameters {
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
         booleanParam(name: 'NPM_DEPLOY', defaultValue: false, description: 'NPM deployment')
-        string(name: 'ALT_DEPLOYMENT_REPOSITORY', defaultValue: 'central@valuya::default::https://nexus.valuya.be/nexus/repository/maven-snapshots/',
-         description: 'Alternative deployment repo')
+        string(name: 'ALT_DEPLOYMENT_REPOSITORY', defaultValue: '', description: 'Alternative deployment repo')
+        string(name: 'MVN_ARGS', defaultValue: '', description: 'Additional maven args')
     }
     options {
         disableConcurrentBuilds()
@@ -13,6 +13,12 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
+                script {
+                    env.MVN_ARGS=params.MVN_ARGS
+                    if (params.ALT_DEPLOYMENT_REPOSITORY != '') {
+                        env.MVN_ARGS="${env.MVN_ARGS} -DaltDeploymentRepository=${params.ALT_DEPLOYMENT_REPOSITORY}"
+                    }
+                }
                 withMaven(maven: 'maven', mavenSettingsConfig: 'nexus-mvn-settings') {
                     sh "mvn -DskipTests=${params.SKIP_TESTS} clean compile install"
                 }
@@ -21,10 +27,14 @@ pipeline {
         stage ('Publish') {
             steps {
                 script {
-                    env.MVN_ARGS=""
+                    env.MVN_ARGS=params.MVN_ARGS
                     env.NPM_DEPLOY=params.NPM_DEPLOY
                     if (params.ALT_DEPLOYMENT_REPOSITORY != '') {
-                        env.MVN_ARGS="-DaltDeploymentRepository=${params.ALT_DEPLOYMENT_REPOSITORY}"
+                        env.MVN_ARGS="${env.MVN_ARGS} -DaltDeploymentRepository=${params.ALT_DEPLOYMENT_REPOSITORY}"
+                    }
+                    if (env.BRANCH_NAME == 'master') {
+                        env.MVN_ARGS="${env.MVN_ARGS} -Possrh-deploy"
+                        env.NPM_DEPLOY="true"
                     }
                 }
                 withMaven(maven: 'maven', mavenSettingsConfig: 'nexus-mvn-settings',

@@ -58,6 +58,10 @@
         <url>http://github.com/cghislai/authenticator/tree/master</url>
     </scm>
 
+    <properties>
+        <typescript.api.npm.version>${project.version}</typescript.api.npm.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -295,13 +299,12 @@
                         <mapDate>asString</mapDate>
                         <generateNpmPackageJson>true</generateNpmPackageJson>
                         <npmName>@charlyghislain/${project.artifactId}</npmName>
-                        <npmVersion>${project.version}</npmVersion>
+                        <npmVersion>${typescript.api.npm.version}</npmVersion>
                     </configuration>
                 </plugin>
 
             </plugins>
         </pluginManagement>
-
     </build>
 
     <profiles>
@@ -330,7 +333,6 @@
                             <autoReleaseAfterClose>false</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>
