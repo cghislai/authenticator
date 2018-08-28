@@ -20,6 +20,7 @@ import com.charlyghislain.authenticator.management.api.UserResource;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
 import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
 import com.charlyghislain.authenticator.management.api.domain.WsPagination;
+import com.charlyghislain.authenticator.management.api.domain.WsPasswordReset;
 import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
 import com.charlyghislain.authenticator.management.api.domain.WsResultList;
 import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
@@ -119,6 +120,20 @@ public class UserResourceController implements UserResource {
 
         PasswordResetToken newResetToken = passwordResetTokenUpdateService.createNewResetToken(user);
         return wsPasswordResetTokenConverter.toWsPasswordResetToken(newResetToken);
+    }
+
+    @Override
+    public void resetUserPassword(Long userId, WsPasswordReset wsPasswordReset) {
+        UserApplication userApplication = getUserApplication(userId);
+        User user = userApplication.getUser();
+        String resetToken = wsPasswordReset.getResetToken();
+        String password = wsPasswordReset.getPassword();
+
+        try {
+            userUpdateService.resetUserPassword(user, password, resetToken);
+        } catch (UnauthorizedOperationException e) {
+            throw new AuthenticatorManagementWebException(AuthenticatorManagementWebError.UNAUTHORIZED_OPERATION);
+        }
     }
 
     @Override

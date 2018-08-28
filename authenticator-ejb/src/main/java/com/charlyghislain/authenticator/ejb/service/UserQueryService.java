@@ -16,7 +16,6 @@ import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
 import com.charlyghislain.authenticator.ejb.util.FilterUtils;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,7 +24,6 @@ import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-import javax.security.enterprise.identitystore.PasswordHash;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +31,6 @@ import java.util.Optional;
 
 @Stateless
 public class UserQueryService {
-
-    @Inject
-    private PasswordHash passwordHash;
 
     @PersistenceContext
     private EntityManager entityManager;

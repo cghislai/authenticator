@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.management.api;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
 import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
 import com.charlyghislain.authenticator.management.api.domain.WsPagination;
+import com.charlyghislain.authenticator.management.api.domain.WsPasswordReset;
 import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
 import com.charlyghislain.authenticator.management.api.domain.WsResultList;
 import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
@@ -45,6 +46,10 @@ public interface UserResource {
     @GET
     @Path("/{id}/password/resetToken")
     WsPasswordResetToken createNewPasswordResetToken(@PathParam("id") Long userId);
+
+    @POST
+    @Path("/{id}/password/reset")
+    void resetUserPassword(@PathParam("id") Long userId, WsPasswordReset wsPasswordReset);
 
     @DELETE
     @Path("/{id}")
