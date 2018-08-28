@@ -130,6 +130,11 @@
             union all
             select email as name, 'authenticator.ADMIN' as role from auth_user where admin is true
         </createView>
+        <createView viewName="user_password">
+            select name as name, password as password from auth_user where active is true
+            union all
+            select email as name, password as password from auth_user where active is true
+        </createView>
     </changeSet>
 
     <changeSet id="4-auth-user-application" author="cghislai">

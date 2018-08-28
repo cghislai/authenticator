@@ -108,11 +108,11 @@ public class UserQueryService {
                 .ifPresent(predicates::add);
 
         Optional.ofNullable(filter.getApplication())
-                .map(app->criteriaBuilder.equal(applicationJoin, app))
+                .map(app -> criteriaBuilder.equal(applicationJoin, app))
                 .ifPresent(predicates::add);
 
         Optional.ofNullable(filter.getUser())
-                .map(user->criteriaBuilder.equal(userJoin, user))
+                .map(user -> criteriaBuilder.equal(userJoin, user))
                 .ifPresent(predicates::add);
 
 
@@ -126,10 +126,8 @@ public class UserQueryService {
                 .map(id -> criteriaBuilder.equal(applicationIdPath, id))
                 .ifPresent(predicates::add);
 
-
-        Path<String> namePath = userJoin.get(User_.name);
         Optional.ofNullable(userFilter.getName())
-                .map(name -> criteriaBuilder.equal(namePath, name))
+                .map(name -> createNamePredicate(criteriaBuilder, userJoin, name))
                 .ifPresent(predicates::add);
 
         Path<String> emailPath = userJoin.get(User_.email);
@@ -137,6 +135,7 @@ public class UserQueryService {
                 .map(email -> criteriaBuilder.equal(emailPath, email))
                 .ifPresent(predicates::add);
 
+        Path<String> namePath = userJoin.get(User_.name);
         Optional.ofNullable(userFilter.getNameContains())
                 .map(FilterUtils::toSqlContainsString)
                 .map(name -> criteriaBuilder.like(namePath, name))
@@ -159,9 +158,8 @@ public class UserQueryService {
                 .map(active -> criteriaBuilder.equal(activePath, active))
                 .ifPresent(predicates::add);
 
-        Path<String> namePath = userFrom.get(User_.name);
         Optional.ofNullable(UserFilter.getName())
-                .map(name -> criteriaBuilder.equal(namePath, name))
+                .map(name -> createNamePredicate(criteriaBuilder, userFrom, name))
                 .ifPresent(predicates::add);
 
         Path<String> emailPath = userFrom.get(User_.email);
@@ -169,6 +167,7 @@ public class UserQueryService {
                 .map(email -> criteriaBuilder.equal(emailPath, email))
                 .ifPresent(predicates::add);
 
+        Path<String> namePath = userFrom.get(User_.name);
         Optional.ofNullable(UserFilter.getNameContains())
                 .map(FilterUtils::toSqlContainsString)
                 .map(name -> criteriaBuilder.like(namePath, name))
@@ -185,6 +184,14 @@ public class UserQueryService {
                 .ifPresent(predicates::add);
 
         return predicates;
+    }
+
+    private Predicate createNamePredicate(CriteriaBuilder criteriaBuilder, From<?, User> userFrom, String name) {
+        Path<String> namePath = userFrom.get(User_.name);
+        Path<String> emailPath = userFrom.get(User_.email);
+        Predicate nameMatchPredicate = criteriaBuilder.equal(namePath, name);
+        Predicate emailMatchPredicate = criteriaBuilder.equal(emailPath, name);
+        return criteriaBuilder.or(nameMatchPredicate, emailMatchPredicate);
     }
 
     @NotNull
