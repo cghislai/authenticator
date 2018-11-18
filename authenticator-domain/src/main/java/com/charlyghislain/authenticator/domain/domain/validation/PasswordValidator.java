@@ -11,6 +11,10 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        return isPasswordValid(value);
+    }
+
+    public static boolean isPasswordValid(String value) {
         if (value == null || value.length() < 8) {
             return false;
         }

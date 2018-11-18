@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationAuthenticatorAuthorizationHealth;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.WebApplicationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class ApplicationAuthenticatorAuthorizationHealthConverter {
 
         ApplicationAuthenticatorAuthorizationHealth providerAuthorizationHealth = new ApplicationAuthenticatorAuthorizationHealth();
         providerAuthorizationHealth.setApplicationName(application.getName());
-        providerAuthorizationHealth.setReachable(false);
+        providerAuthorizationHealth.setReachable(isReachable(e));
         providerAuthorizationHealth.setErrors(errorMessages);
         return providerAuthorizationHealth;
     }
@@ -42,4 +43,15 @@ public class ApplicationAuthenticatorAuthorizationHealthConverter {
 
         return authorizationHealth;
     }
+
+
+    private boolean isReachable(Throwable e) {
+        if (e instanceof WebApplicationException) {
+            WebApplicationException webApplicationException = (WebApplicationException) e;
+            return webApplicationException.getResponse() != null;
+        } else {
+            return false;
+        }
+    }
+
 }

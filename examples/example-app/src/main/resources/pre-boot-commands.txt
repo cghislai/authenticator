@@ -5,4 +5,4 @@ set configs.config.server-config.network-config.network-listeners.network-listen
 set configs.config.server-config.network-config.network-listeners.network-listener.http-listener.enabled=false
 set configs.config.server-config.http-service.virtual-server.${virtual-server-name}.docroot=/dir/to/docs/
 
-add-jvm-option
+#add-jvm-option

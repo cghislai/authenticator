@@ -1,12 +1,6 @@
 package com.charlyghislain.authenticator.management.api;
 
-import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
-import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
-import com.charlyghislain.authenticator.management.api.domain.WsPagination;
-import com.charlyghislain.authenticator.management.api.domain.WsPasswordReset;
-import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
-import com.charlyghislain.authenticator.management.api.domain.WsResultList;
-import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
+import com.charlyghislain.authenticator.management.api.domain.*;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -25,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 public interface UserResource {
 
     @POST
-    WsApplicationUser createUser(WsApplicationUser wsUser);
+    WsApplicationUser createUser(WsApplicationUserWithPassword wsUser);
 
     @GET
     @Path("/list")

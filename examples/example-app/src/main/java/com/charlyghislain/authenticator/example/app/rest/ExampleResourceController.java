@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.example.app.client.AuthenticatorManageme
 import com.charlyghislain.authenticator.example.app.domain.WsPasswordResetTokenWithUid;
 import com.charlyghislain.authenticator.example.app.domain.WsRegistration;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
+import com.charlyghislain.authenticator.management.api.domain.WsApplicationUserWithPassword;
 import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -112,18 +113,16 @@ public class ExampleResourceController {
                 .ifPresent(this::throwUserWithSameNameExists);
 
         this.broadcastEvent(REGISTRATION_EVENT_ID, "Creating inactive user");
-        WsApplicationUser wsApplicationUser = new WsApplicationUser();
+        WsApplicationUserWithPassword wsApplicationUser = new WsApplicationUserWithPassword();
         wsApplicationUser.setEmail(registration.email);
         wsApplicationUser.setName(registration.name);
         wsApplicationUser.setActive(false);
+        wsApplicationUser.setPassword(registration.password);
         WsApplicationUser createdUser = this.managementClient.createUser(wsApplicationUser);
         this.broadcastEvent(REGISTRATION_EVENT_ID, "Create user " + createdUser.getId());
 
-        this.broadcastEvent(REGISTRATION_EVENT_ID, "Setting user password");
-        WsApplicationUser updatedUser = this.managementClient.setPassword(createdUser, registration.password);
-
-        this.broadcastEvent(REGISTRATION_EVENT_ID, "user created. Active: " + updatedUser.isActive());
-        return updatedUser;
+        this.broadcastEvent(REGISTRATION_EVENT_ID, "user created. Active: " + createdUser.isActive());
+        return createdUser;
     }
 
 

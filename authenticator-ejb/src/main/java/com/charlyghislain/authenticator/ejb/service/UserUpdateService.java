@@ -4,14 +4,11 @@ package com.charlyghislain.authenticator.ejb.service;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
-import com.charlyghislain.authenticator.domain.domain.exception.AdminCannotLockHerselfOutException;
-import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
-import com.charlyghislain.authenticator.domain.domain.exception.EmailAlreadyExistsException;
-import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
-import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
+import com.charlyghislain.authenticator.domain.domain.exception.*;
 import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.filter.UserFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import com.charlyghislain.authenticator.domain.domain.validation.PasswordValidator;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidEmail;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifierName;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidPassword;
@@ -51,6 +48,10 @@ public class UserUpdateService {
     private EmailVerificationUpdateService emailVerificationUpdateService;
     @Inject
     private PasswordResetTokenUpdateService passwordResetTokenUpdateService;
+
+    public boolean checkPasswordValidity(String password) {
+        return PasswordValidator.isPasswordValid(password);
+    }
 
     //    @DenyAll
     public User createUserNoChecks(User user) throws NameAlreadyExistsException, EmailAlreadyExistsException {
@@ -119,7 +120,8 @@ public class UserUpdateService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_APPLICATION, AuthenticatorConstants.ROLE_ADMIN})
-    public UserApplication createApplicationUser(@NotNull Application application, User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public UserApplication createApplicationUser(@NotNull Application application, User newUser,
+                                                 @ValidPassword String newUserPassword) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = newUser.getName();
         String email = newUser.getEmail();
         boolean active = newUser.isActive();
@@ -137,6 +139,7 @@ public class UserUpdateService {
         user.setCreationTime(LocalDateTime.now());
 
         User managedUser = saveUser(user);
+        managedUser = setUserPassword(managedUser, newUserPassword);
 
         UserApplication userApplication = new UserApplication();
         userApplication.setUser(managedUser);

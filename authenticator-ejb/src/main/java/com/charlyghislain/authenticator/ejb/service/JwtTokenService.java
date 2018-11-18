@@ -193,7 +193,7 @@ public class JwtTokenService {
         try {
             return jwtVerifier.verify(token);
         } catch (JWTVerificationException verificationException) {
-            throw new UnauthorizedOperationException();
+            throw new UnauthorizedOperationException(verificationException);
         }
     }
 

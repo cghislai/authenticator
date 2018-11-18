@@ -2,14 +2,7 @@ package com.charlyghislain.authenticator.example.app.client;
 
 import com.charlyghislain.authenticator.management.api.ConnectivityResource;
 import com.charlyghislain.authenticator.management.api.UserResource;
-import com.charlyghislain.authenticator.management.api.domain.WsApplicationInfo;
-import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
-import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
-import com.charlyghislain.authenticator.management.api.domain.WsHealthCheckStatus;
-import com.charlyghislain.authenticator.management.api.domain.WsPagination;
-import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
-import com.charlyghislain.authenticator.management.api.domain.WsResultList;
-import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
+import com.charlyghislain.authenticator.management.api.domain.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
@@ -62,7 +55,7 @@ public class AuthenticatorManagementClient {
         return this.managementUserResource.getUser(id);
     }
 
-    public WsApplicationUser createUser(WsApplicationUser applicationUser) {
+    public WsApplicationUser createUser(WsApplicationUserWithPassword applicationUser) {
         return this.managementUserResource.createUser(applicationUser);
     }
 

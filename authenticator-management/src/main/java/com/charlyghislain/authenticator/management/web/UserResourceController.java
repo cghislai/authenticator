@@ -1,10 +1,6 @@
 package com.charlyghislain.authenticator.management.web;
 
-import com.charlyghislain.authenticator.domain.domain.Application;
-import com.charlyghislain.authenticator.domain.domain.EmailVerificationToken;
-import com.charlyghislain.authenticator.domain.domain.PasswordResetToken;
-import com.charlyghislain.authenticator.domain.domain.User;
-import com.charlyghislain.authenticator.domain.domain.UserApplication;
+import com.charlyghislain.authenticator.domain.domain.*;
 import com.charlyghislain.authenticator.domain.domain.exception.EmailAlreadyExistsException;
 import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
 import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
@@ -17,20 +13,10 @@ import com.charlyghislain.authenticator.ejb.service.PasswordResetTokenUpdateServ
 import com.charlyghislain.authenticator.ejb.service.UserQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserUpdateService;
 import com.charlyghislain.authenticator.management.api.UserResource;
-import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
-import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
-import com.charlyghislain.authenticator.management.api.domain.WsPagination;
-import com.charlyghislain.authenticator.management.api.domain.WsPasswordReset;
-import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
-import com.charlyghislain.authenticator.management.api.domain.WsResultList;
-import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
+import com.charlyghislain.authenticator.management.api.domain.*;
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebError;
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebException;
-import com.charlyghislain.authenticator.management.web.converter.UserApplicationFilterConverter;
-import com.charlyghislain.authenticator.management.web.converter.UserConverter;
-import com.charlyghislain.authenticator.management.web.converter.WsApplicationUserConverter;
-import com.charlyghislain.authenticator.management.web.converter.WsEmailVerificationTokenConverter;
-import com.charlyghislain.authenticator.management.web.converter.WsPasswordResetTokenConverter;
+import com.charlyghislain.authenticator.management.web.converter.*;
 import com.charlyghislain.authenticator.management.web.provider.CallerManagedApplication;
 
 import javax.annotation.security.RolesAllowed;
@@ -65,10 +51,15 @@ public class UserResourceController implements UserResource {
     private Application callerManagedApplication;
 
     @Override
-    public WsApplicationUser createUser(WsApplicationUser wsApplicationUser) {
+    public WsApplicationUser createUser(WsApplicationUserWithPassword wsApplicationUser) {
         User user = userConverter.toUser(wsApplicationUser);
+        String password = wsApplicationUser.getPassword();
+        boolean passwordValid = userUpdateService.checkPasswordValidity(password);
+        if (!passwordValid) {
+            throw new AuthenticatorManagementWebException(AuthenticatorManagementWebError.INVALID_PASSWORD);
+        }
         try {
-            UserApplication newUserApplication = userUpdateService.createApplicationUser(callerManagedApplication, user);
+            UserApplication newUserApplication = userUpdateService.createApplicationUser(callerManagedApplication, user, password);
             return wsApplicationUserConverter.toWsUserApplication(newUserApplication);
         } catch (EmailAlreadyExistsException e) {
             throw new AuthenticatorManagementWebException(AuthenticatorManagementWebError.EMAIL_ALREADY_EXISTS);
