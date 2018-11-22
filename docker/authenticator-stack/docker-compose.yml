@@ -24,7 +24,7 @@ services:
     volumes:
       - /dev/urandom:/dev/random
     ports:
-      - 8443:8181
+      - 8443:8443
 
 volumes:
   db-data: {}
