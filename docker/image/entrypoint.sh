@@ -1,6 +1,8 @@
 #!/bin/bash
 
 PRE_BOOT_FILE="/opt/payara/pre-boot-commands.sh"
+POST_BOOT_FILE="/opt/payara/post-boot-commands.sh"
+
 DB_DRIVER="${DB_DRIVER:-mariadb}"
 DB_USER="${DB_USER:-}"
 DB_PASSWORD="${DB_PASSWORD:-}"
@@ -24,13 +26,15 @@ if [[ -z "CONFIG_TOKEN_ISSUER" ]] ; then
     echo "No CONFIG_TOKEN_ISSUER provided" && exit 1
 fi
 
-cat << EOF >> ${PRE_BOOT_FILE}
+cat << EOF > ${PRE_BOOT_FILE}
 set configs.config.server-config.admin-service.das-config.dynamic-reload-enabled=false
 
 # Https only, even with an expired self-signed
 set configs.config.server-config.network-config.network-listeners.network-listener.https-listener.enabled=true
 set configs.config.server-config.network-config.network-listeners.network-listener.http-listener.enabled=false
+EOF
 
+cat << EOF > ${POST_BOOT_FILE}
 set-config-property --source=domain --propertyValue="${CONFIG_NAME}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.name"
 set-config-property --source=domain --propertyValue="${CONFIG_URL}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.url"
 set-config-property --source=domain --propertyValue="${CONFIG_TOKEN_ISSUER}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.token.issuer"
@@ -56,7 +60,6 @@ elif [[ "$DB_DRIVER" == "h2" ]] ; then
   cat << EOF >> ${PRE_BOOT_FILE}
 create-jdbc-connection-pool --datasourceclassname=org.h2.jdbcx.JdbcDataSource --restype=javax.sql.DataSource --property=URL=jdbc\:h2\:\${com.sun.aas.instanceRoot}/lib/databases/embedded_auth;AUTO_SERVER\=TRUE authPool
 create-jdbc-resource --connectionpoolid=authPool jdbc/authenticator
-
 EOF
 
 else
@@ -66,5 +69,6 @@ fi
 
 exec "java" "-jar" "/opt/payara/payara-micro.jar" \
     "--prebootcommandfile" "${PRE_BOOT_FILE}" \
+    "--postbootcommandfile" "${POST_BOOT_FILE}" \
     "--addlibs" "/opt/payara/lib/" \
     "$@"
