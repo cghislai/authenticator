@@ -102,6 +102,18 @@ Users are expected to create accounts on applications. Users with an existing ac
 a rest resource to consult and update their data. User email verification is delegated to applications
 which have the permission.
 
+## Note on entropy
+
+This service uses `SecureRandom.getInstanceStrong()` as its RNG, which in turn will use the /dev/random
+entropy source on unix systems. This entropy source may block until enough entropy is available, and as such the 
+application may hang during key pair generation, like on first deployment. To avoid this, make sure your system is 
+provided with enough entropy. Alternatively, using docker, you can bind-mount the host /dev/urandom - 
+which does not block - as the container /dev/random. Make sure you understand the implications before using this. 
+
+## Docker image
+
+Docker images are built automatically. They fetch and deploy the `authenticator-web` war artifact on startup. You
+can specify the version to deploy by overwriting the CMD.
 
 ## License
 MIT, do whatever you want

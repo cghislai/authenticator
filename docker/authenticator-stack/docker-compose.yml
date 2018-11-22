@@ -1,0 +1,30 @@
+version: '3.6'
+
+services:
+  db:
+    image: mariadb:latest
+    environment:
+      - "MYSQL_ROOT_PASSWORD=db-root-password"
+      - "MYSQL_USER=authenticator"
+      - "MYSQL_PASSWORD=db-password"
+      - "MYSQL_DATABASE=authenticator"
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3311:3306
+
+  authenticator:
+    image: authenticator:latest
+    environment:
+      - "DB_DRIVER=mariadb"
+      - "DB_SERVER=db"
+      - "DB_USER=authenticator"
+      - "DB_PASSWORD=db-password"
+      - "DB_NAME=authenticator"
+    volumes:
+      - /dev/urandom:/dev/random
+    ports:
+      - 8443:8181
+
+volumes:
+  db-data: {}
