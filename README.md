@@ -96,3 +96,9 @@ Users are expected to create accounts on applications. Users with an existing ac
 a rest resource to consult and update their data. User email verification is delegated to applications
 which have the permission.
 
+
+## License
+MIT, do whatever you want
+
+## Links
+- An angular frontend for the admin api: https://github.com/cghislai/authenticator-admin-front
