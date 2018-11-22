@@ -1,0 +1,14 @@
+GET {{adminApiUrl}}/user/list
+Accept: application/json
+Authorization: Basic YWRtaW46Y2hhbmdlbWU=
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body['totalCount'] != null, "Body is a a wsResultLit");
+        client.assert(response.body['results'] != null, "Body is a a wsResultLit");
+    });
+%}
+
+###
+

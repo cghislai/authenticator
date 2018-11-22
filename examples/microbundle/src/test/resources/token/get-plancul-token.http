@@ -1,0 +1,5 @@
+GET {{publicApiUrl}}/token/plancul
+Accept: text/plain
+Authorization: Basic Y2doaXNsYWk6cGFzc3dvcmQxIQ==
+
+###

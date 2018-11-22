@@ -1,0 +1,19 @@
+POST {{adminApiUrl}}/user
+Content-Type: application/json
+Authorization: Basic {{adminAuthBase64}}
+
+{
+"name": "test-s",
+"email": "tests@local",
+"active": true,
+"admin": false
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
