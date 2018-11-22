@@ -8,8 +8,20 @@ DB_PASSWORD_FILE="${DB_PASSWORD_FILE:-/var/run/secrets/db-password}"
 DB_NAME="${DB_NAME:-}"
 DB_SERVER="${DB_SERVER:-}"
 
+CONFIG_NAME="${CONFIG_NAME:-Authenticator}"
+CONFIG_URL="${CONFIG_URL:-}"
+CONFIG_TOKEN_ISSUER="${CONFIG_TOKEN_ISSUER:-}"
+CONFIG_DEFAULT_ADMIN_MAIL="${CONFIG_DEFAULT_ADMIN_MAIL:-}"
+CONFIG_CORS_ALLOWED_ORIGINS="${CONFIG_CORS_ALLOWED_ORIGINS:-*}"
+
 if [[ -f "$DB_PASSWORD_FILE" && -z "$DB_PASSWORD" ]] ; then
     DB_PASSWORD="$(head -n1 ${DB_PASSWORD_FILE})"
+fi
+if [[ -z "$CONFIG_URL" ]] ; then
+    echo "No CONFIG_URL provided" && exit 1
+fi
+if [[ -z "CONFIG_TOKEN_ISSUER" ]] ; then
+    echo "No CONFIG_TOKEN_ISSUER provided" && exit 1
 fi
 
 cat << EOF >> ${PRE_BOOT_FILE}
@@ -18,6 +30,12 @@ set configs.config.server-config.admin-service.das-config.dynamic-reload-enabled
 # Https only, even with an expired self-signed
 set configs.config.server-config.network-config.network-listeners.network-listener.https-listener.enabled=true
 set configs.config.server-config.network-config.network-listeners.network-listener.http-listener.enabled=false
+
+set-config-property --source=domain --propertyValue="${CONFIG_NAME}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.name"
+set-config-property --source=domain --propertyValue="${CONFIG_URL}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.url"
+set-config-property --source=domain --propertyValue="${CONFIG_TOKEN_ISSUER}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.token.issuer"
+set-config-property --source=domain --propertyValue="${CONFIG_DEFAULT_ADMIN_MAIL}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.admin.defaultEmail"
+set-config-property --source=domain --propertyValue="${CONFIG_CORS_ALLOWED_ORIGINS}" --propertyName="payara.microprofile.com.charlyghislain.authenticator.cors.allowedOrigins"
 EOF
 
 if [[ "$DB_DRIVER" == "mariadb" ]] ; then

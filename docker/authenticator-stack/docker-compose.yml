@@ -21,6 +21,8 @@ services:
       - "DB_USER=authenticator"
       - "DB_PASSWORD=db-password"
       - "DB_NAME=authenticator"
+      - "CONFIG_URL=https://localhost:8443"
+      - "CONFIG_TOKEN_ISSUER=localhost:8443"
     volumes:
       - /dev/urandom:/dev/random
     ports:
