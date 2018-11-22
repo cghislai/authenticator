@@ -1,8 +1,10 @@
 # Authenticator
 [![Maven Central](https://img.shields.io/maven-central/v/com.charlyghislain.authenticator/authenticator.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.charlyghislain.authenticator%22%20AND%20a:%22authenticator%22)
-Typescript typings: authenticator-api [![npm version](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-api.svg)](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-api),
-authenticator-admin-api: [![npm version](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-admin-api.svg)](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-admin-api),
-authenticator-management-api: [![npm version](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-management-api.svg)](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-management-api)
+[![Docker Build](https://img.shields.io/docker/build/cghislai/authenticator.svg)](https://hub.docker.com/r/cghislai/authenticator/)
+Typescript typings for the apis are provided as npm packages:
+[![npm version](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-api.svg)](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-api)
+[![npm version](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-admin-api.svg)](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-admin-api)
+[![npm version](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-management-api.svg)](https://badge.fury.io/js/%40charlyghislain%2Fauthenticator-management-api)
 
 
 
