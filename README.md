@@ -1,4 +1,6 @@
 # Authenticator
+[![Maven Central](https://img.shields.io/maven-central/v/com.charlyghislain.authenticator/authenticator.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.charlyghislain.authenticator%22%20AND%20a:%22authenticator%22)
+
 
 This service signs JWT tokens to be used by applications relying on the
 [JWT-auth 1.1](https://github.com/eclipse/microprofile-jwt-auth/blob/1.1/spec/src/main/asciidoc/microprofile-jwt-auth-spec.asciidoc)
