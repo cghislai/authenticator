@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.admin.api.domain.WsApplicationFilter;
 import com.charlyghislain.authenticator.admin.api.domain.WsApplicationHealth;
 import com.charlyghislain.authenticator.admin.api.domain.WsPagination;
 import com.charlyghislain.authenticator.admin.api.domain.WsResultList;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AdminApplicationResource {
 
+    @NonNull
     @GET
     @Path("/list")
     WsResultList<WsApplication> listApplications(@BeanParam WsApplicationFilter wsApplicationFilter,
@@ -32,10 +34,12 @@ public interface AdminApplicationResource {
     @Path("/{id}")
     WsApplication getApplication(@PathParam("id") Long applicationId);
 
+    @NonNull
     @PUT
     @Path("/{id}")
     WsApplication updateApplication(@PathParam("id") Long applicationId, @Valid WsApplication wsApplication);
 
+    @NonNull
     @POST
     @Path("/")
     WsApplication createApplication(@Valid WsApplication wsApplication);
@@ -45,6 +49,7 @@ public interface AdminApplicationResource {
     @Produces(MediaType.TEXT_PLAIN)
     String createApplicationToken(@PathParam("id") Long applicationId);
 
+    @NonNull
     @GET
     @Path("/{id}/health")
     WsApplicationHealth getApplicationHealth(@PathParam("id") Long applicationId);

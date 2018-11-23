@@ -5,10 +5,12 @@ import com.charlyghislain.authenticator.admin.api.domain.WsUserApplication;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class WsUserApplicationConverter {
 
-    public WsUserApplication toWsUserApplication(UserApplication userApplication) {
+    @NonNull
+    public WsUserApplication toWsUserApplication(@NonNull UserApplication userApplication) {
         Long id = userApplication.getId();
         User user = userApplication.getUser();
         Application application = userApplication.getApplication();

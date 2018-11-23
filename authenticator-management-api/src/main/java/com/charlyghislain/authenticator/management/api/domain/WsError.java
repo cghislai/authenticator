@@ -1,5 +1,6 @@
 package com.charlyghislain.authenticator.management.api.domain;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -15,7 +16,7 @@ public class WsError implements Serializable {
 
     @NotNull
     private String code;
-    @NotNull
+    @Nullable
     private String description;
 
     public String getCode() {
@@ -26,11 +27,12 @@ public class WsError implements Serializable {
         this.code = code;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@Nullable String description) {
         this.description = description;
     }
 }

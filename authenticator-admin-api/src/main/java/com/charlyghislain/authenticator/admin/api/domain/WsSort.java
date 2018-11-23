@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.admin.api.domain;
 
 import com.charlyghislain.authenticator.admin.api.error.AuthenticatorAdminWebError;
 import com.charlyghislain.authenticator.admin.api.error.AuthenticatorAdminWebException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ public class WsSort implements Serializable {
         this.order = order;
     }
 
+    @Nullable
     public String getField() {
         return field;
     }
@@ -37,6 +39,7 @@ public class WsSort implements Serializable {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return field + ":" + (order == 1 ? "1" : "-1");

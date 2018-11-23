@@ -14,6 +14,7 @@ import com.charlyghislain.authenticator.ejb.service.RsaKeyPairConverterService;
 import com.charlyghislain.authenticator.ejb.service.SigningKKeyPairsProvider;
 import com.charlyghislain.authenticator.web.converter.WsApplicationInfoConverter;
 import com.charlyghislain.authenticator.web.provider.WsAuthenticatorInfoProvider;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ public class InfoResourceController implements InfoResource {
     @Inject
     private WsAuthenticatorInfoProvider wsAuthenticatorInfoProvider;
 
+    @NonNull
     @Override
     public WsAuthenticatorInfo getInfo() {
         return wsAuthenticatorInfoProvider.getAuthenticatorInfo();
@@ -48,6 +50,7 @@ public class InfoResourceController implements InfoResource {
     }
 
 
+    @NonNull
     @Override
     public WsApplicationInfo getApplicationInfo(String applicationName) {
         Application application = applicationQueryService.findActiveApplicationByName(applicationName)

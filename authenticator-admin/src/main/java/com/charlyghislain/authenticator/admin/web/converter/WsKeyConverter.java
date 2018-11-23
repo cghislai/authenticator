@@ -4,6 +4,7 @@ package com.charlyghislain.authenticator.admin.web.converter;
 import com.charlyghislain.authenticator.admin.api.domain.WsKey;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
@@ -14,7 +15,8 @@ import java.util.Optional;
 @ApplicationScoped
 public class WsKeyConverter {
 
-    public WsKey toWskey(RsaKeyPair key) {
+    @NonNull
+    public WsKey toWskey(@NonNull RsaKeyPair key) {
         Long id = key.getId();
         String name = key.getName();
         boolean active = key.isActive();
@@ -23,16 +25,16 @@ public class WsKeyConverter {
         boolean forApplicationSecrets = key.isForApplicationSecrets();
         boolean signingKey = key.isSigningKey();
 
-        Long applicationId = application.map(Application::getId)
-                .orElse(null);
-        ZonedDateTime crationZonedDateTime = creationTime.atZone(ZoneId.systemDefault());
+        Optional<Long> applicationId = application.map(Application::getId);
+        Optional<ZonedDateTime> creationZonedDateTime = Optional.ofNullable(creationTime)
+                .map(t -> t.atZone(ZoneId.systemDefault()));
 
         WsKey wsKey = new WsKey();
-        wsKey.setId(id);
+        Optional.ofNullable(id).ifPresent(wsKey::setId);
         wsKey.setActive(active);
-        wsKey.setName(name);
-        wsKey.setApplicationId(applicationId);
-        wsKey.setCreationDateTime(crationZonedDateTime);
+        Optional.ofNullable(name).ifPresent(wsKey::setName);
+        applicationId.ifPresent(wsKey::setApplicationId);
+        creationZonedDateTime.ifPresent(wsKey::setCreationDateTime);
         wsKey.setForApplicationSecrets(forApplicationSecrets);
         wsKey.setSigningKey(signingKey);
         return wsKey;

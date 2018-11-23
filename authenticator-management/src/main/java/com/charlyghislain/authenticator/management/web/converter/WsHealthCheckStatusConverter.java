@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.management.web.converter;
 
 import com.charlyghislain.authenticator.management.api.domain.WsHealthCheckStatus;
 import com.charlyghislain.authenticator.management.api.domain.WsHealthStatus;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,7 +13,8 @@ import java.util.Map;
 @ApplicationScoped
 public class WsHealthCheckStatusConverter {
 
-    public WsHealthCheckStatus toWsHealthCheckStatus(HealthCheckResponse healthCheckResponse) {
+    @NonNull
+    public WsHealthCheckStatus toWsHealthCheckStatus(@NonNull HealthCheckResponse healthCheckResponse) {
         Map<String, Object> data = healthCheckResponse.getData()
                 .orElseGet(HashMap::new);
         String name = healthCheckResponse.getName();

@@ -7,6 +7,7 @@ import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationRole;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ public class AccessQueryService {
     @Inject
     private UserQueryService userQueryService;
 
-    public Set<String> findUserApplicationRoles(User user, Application application) {
+    public Set<String> findUserApplicationRoles(@NonNull User user, @NonNull Application application) {
         List<ApplicationRole> applicationRoles = userQueryService.findActiveUserApplication(user, application)
                 .map(this::findUserApplicationRoles)
                 .orElseGet(ArrayList::new);

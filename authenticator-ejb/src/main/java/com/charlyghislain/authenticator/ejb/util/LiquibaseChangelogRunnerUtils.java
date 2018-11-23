@@ -23,12 +23,15 @@ public class LiquibaseChangelogRunnerUtils {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
 
             ClassLoader classLoader = LiquibaseChangelogRunnerUtils.class.getClassLoader();
+            if (classLoader == null) {
+                throw new RuntimeException("Could not get a classloader");
+            }
             ResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(classLoader);
             ResourceAccessor fileSystemResourceAccessor = new FileSystemResourceAccessor();
             CompositeResourceAccessor resourceAccessor = new CompositeResourceAccessor(classLoaderResourceAccessor, fileSystemResourceAccessor);
 
             Liquibase liquibase = new Liquibase(mainChangelogFile, resourceAccessor, database);
-            liquibase.update((String) null);
+            liquibase.update("");
         } catch (SQLException e) {
             throw new RuntimeException("SQL error", e);
         } catch (DatabaseException e) {

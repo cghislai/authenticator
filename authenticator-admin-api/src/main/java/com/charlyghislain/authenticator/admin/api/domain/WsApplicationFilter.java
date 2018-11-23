@@ -24,6 +24,7 @@ public class WsApplicationFilter implements Serializable {
     @QueryParam("nameContains")
     private String nameContains;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -32,6 +33,16 @@ public class WsApplicationFilter implements Serializable {
         this.id = id;
     }
 
+    @Nullable
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @Nullable
     public String getName() {
         return name;
     }
@@ -40,19 +51,12 @@ public class WsApplicationFilter implements Serializable {
         this.name = name;
     }
 
+    @Nullable
     public String getNameContains() {
         return nameContains;
     }
 
     public void setNameContains(String nameContains) {
         this.nameContains = nameContains;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 }

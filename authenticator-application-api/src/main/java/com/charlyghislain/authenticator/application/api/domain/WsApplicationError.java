@@ -23,6 +23,7 @@ public class WsApplicationError implements Serializable {
         this.code = code;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }

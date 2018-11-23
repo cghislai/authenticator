@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.admin.api.domain.WsKey;
 import com.charlyghislain.authenticator.admin.api.domain.WsKeyFilter;
 import com.charlyghislain.authenticator.admin.api.domain.WsPagination;
 import com.charlyghislain.authenticator.admin.api.domain.WsResultList;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AdminKeyResource {
 
+    @NonNull
     @GET
     @Path("/list")
     WsResultList<WsKey> listKeys(@BeanParam WsKeyFilter wsKeyFilter, @BeanParam WsPagination wsPagination);
@@ -29,14 +31,17 @@ public interface AdminKeyResource {
     @Path("/{id}")
     WsKey getKey(@PathParam("id") Long keyId);
 
+    @NonNull
     @POST
     @Path("/")
     WsKey createKey(WsKey wsKey);
 
+    @NonNull
     @PUT
     @Path("/{id}")
     WsKey updateKey(@PathParam("id") Long keyId, WsKey wsKey);
 
+    @NonNull
     @GET
     @Path("/{id}/public")
     @Produces(MediaType.TEXT_PLAIN)

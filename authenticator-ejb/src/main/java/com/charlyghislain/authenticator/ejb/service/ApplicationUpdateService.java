@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExist
 import com.charlyghislain.authenticator.domain.domain.filter.ApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.util.CharacterSequences;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,7 +31,7 @@ public class ApplicationUpdateService {
     private RsaKeyPairUpdateService rsaKeyPairUpdateService;
 
 
-    public Application createApplication(@Valid Application newApplication) throws NameAlreadyExistsException {
+    public Application createApplication(@NonNull @Valid Application newApplication) throws NameAlreadyExistsException {
         String name = newApplication.getName();
         String endpointUrl = newApplication.getEndpointUrl();
         boolean active = newApplication.isActive();
@@ -58,8 +59,8 @@ public class ApplicationUpdateService {
     }
 
 
-    public Application updateApplication(@NotNull Application existingApplication,
-                                         @Valid Application newApplication) throws NameAlreadyExistsException {
+    public Application updateApplication(@NonNull @NotNull Application existingApplication,
+                                         @NonNull @Valid Application newApplication) throws NameAlreadyExistsException {
         String name = newApplication.getName();
         String endpointUrl = newApplication.getEndpointUrl();
         boolean active = newApplication.isActive();
@@ -100,7 +101,7 @@ public class ApplicationUpdateService {
     }
 
 
-    private void createNewApplicationKeyPair(Application managedApplication) {
+    private void createNewApplicationKeyPair(@NonNull Application managedApplication) {
         RsaKeyPair rsaKeyPair = new RsaKeyPair();
         rsaKeyPair.setApplication(managedApplication);
         rsaKeyPair.setActive(true);

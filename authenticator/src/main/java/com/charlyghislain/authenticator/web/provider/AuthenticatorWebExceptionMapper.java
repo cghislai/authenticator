@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.web.provider;
 
 import com.charlyghislain.authenticator.api.domain.WsError;
 import com.charlyghislain.authenticator.api.error.AuthenticatorWebException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ public class AuthenticatorWebExceptionMapper implements ExceptionMapper<Authenti
 
 
     @Override
-    public Response toResponse(AuthenticatorWebException exception) {
+    public Response toResponse(@NonNull AuthenticatorWebException exception) {
         String code = exception.getCode();
         int status = exception.getStatus();
         String description = exception.getDescription();

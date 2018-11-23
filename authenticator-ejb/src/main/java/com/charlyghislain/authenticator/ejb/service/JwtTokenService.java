@@ -16,6 +16,7 @@ import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstant
 import com.charlyghislain.authenticator.domain.domain.util.CharacterSequences;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.annotation.security.PermitAll;
@@ -58,7 +59,7 @@ public class JwtTokenService {
 
 
     @RolesAllowed({AuthenticatorConstants.ROLE_USER})
-    public String generateUserTokenForApplication(UserApplication userApplication) throws NoSigningKeyException, UnauthorizedOperationException {
+    public String generateUserTokenForApplication(@NonNull UserApplication userApplication) throws NoSigningKeyException, UnauthorizedOperationException {
         User user = userApplication.getUser();
         Application application = userApplication.getApplication();
 
@@ -91,7 +92,7 @@ public class JwtTokenService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_USER})
-    public String generateUserTokenForAuthenticator(User user) throws NoSigningKeyException {
+    public String generateUserTokenForAuthenticator(@NonNull User user) throws NoSigningKeyException {
         RsaKeyPair activeProviderKey = signingKKeyPairsProvider.getAuthenticatorSigningKey();
         Algorithm algorithm = getAlgorithm(activeProviderKey);
 
@@ -121,7 +122,7 @@ public class JwtTokenService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
-    public String generateApplicationTokenForAuthenticator(Application application) throws NoSigningKeyException {
+    public String generateApplicationTokenForAuthenticator(@NonNull Application application) throws NoSigningKeyException {
         RsaKeyPair keyForApplicationSecrets = signingKKeyPairsProvider.getActiveAuthenticatorKeyForApplicationSecrets();
         Algorithm algorithm = getAlgorithm(keyForApplicationSecrets);
         Long applicationId = application.getId();
@@ -156,7 +157,7 @@ public class JwtTokenService {
 
     // @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN, AuthenticatorConstants.ROLE_APP}) // No RunAs for healthChecks
     @PermitAll
-    public String generateAuthenticatorTokenForApplication(Application application) {
+    public String generateAuthenticatorTokenForApplication(@NonNull Application application) {
         RsaKeyPair activeApplicationKey = null;
         try {
             activeApplicationKey = signingKKeyPairsProvider.getApplicationSigningKey(application);

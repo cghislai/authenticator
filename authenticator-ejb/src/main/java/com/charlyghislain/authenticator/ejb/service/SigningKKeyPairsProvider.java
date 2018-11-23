@@ -6,6 +6,8 @@ import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.exception.NoSigningKeyException;
 import com.charlyghislain.authenticator.domain.domain.filter.ApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -23,11 +25,13 @@ public class SigningKKeyPairsProvider {
     @Inject
     private ApplicationQueryService applicationQueryService;
 
-    private final Map<Application, RsaKeyPair> applicationSigningKeys = new ConcurrentSkipListMap<>(
+    private final Map<Application, @Nullable RsaKeyPair> applicationSigningKeys = new ConcurrentSkipListMap<>(
             Comparator.comparing(Application::getId)
     );
 
+    @Nullable
     private RsaKeyPair authenticatorSigningKey;
+    @Nullable
     private RsaKeyPair authenticatorSigningKeyForApplicationSecrets;
 
     @PostConstruct
@@ -36,7 +40,7 @@ public class SigningKKeyPairsProvider {
     }
 
     public RsaKeyPair getApplicationSigningKey(Application application) throws NoSigningKeyException {
-        RsaKeyPair applicationPair = applicationSigningKeys.computeIfAbsent(application, this::findApplicationSigningKeyPairNullable);
+        @Nullable RsaKeyPair applicationPair = applicationSigningKeys.computeIfAbsent(application, this::findApplicationSigningKeyPairNullable);
         return Optional.ofNullable(applicationPair)
                 .orElseThrow(NoSigningKeyException::new);
     }
@@ -89,10 +93,12 @@ public class SigningKKeyPairsProvider {
         }
     }
 
+    @Nullable
     private RsaKeyPair findApplicationSigningKeyPairNullable(Application application) {
         return findApplicationSigningKey(application).orElse(null);
     }
 
+    @NonNull
     private Optional<RsaKeyPair> findApplicationSigningKey(Application application) {
         KeyFilter keyPairFilter = new KeyFilter();
         keyPairFilter.setActive(true);
@@ -103,6 +109,7 @@ public class SigningKKeyPairsProvider {
         return rsaKeyPairQueryService.findRsaKeyPair(keyPairFilter);
     }
 
+    @NonNull
     private Optional<RsaKeyPair> findAuthenticatorSigningKey() {
         KeyFilter keyPairFilter = new KeyFilter();
         keyPairFilter.setActive(true);
@@ -112,6 +119,7 @@ public class SigningKKeyPairsProvider {
         return rsaKeyPairQueryService.findRsaKeyPair(keyPairFilter);
     }
 
+    @NonNull
     private Optional<RsaKeyPair> findAuthenticatorSingingKeyForApplicationSecrets() {
         KeyFilter keyPairFilter = new KeyFilter();
         keyPairFilter.setActive(true);

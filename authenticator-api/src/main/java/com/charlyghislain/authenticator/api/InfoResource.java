@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.api;
 
 import com.charlyghislain.authenticator.api.domain.WsApplicationInfo;
 import com.charlyghislain.authenticator.api.domain.WsAuthenticatorInfo;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 @Path("info")
 public interface InfoResource {
 
+    @NonNull
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     WsAuthenticatorInfo getInfo();
@@ -21,6 +23,7 @@ public interface InfoResource {
     @Produces(MediaType.TEXT_PLAIN)
     String getActivePublicKey();
 
+    @NonNull
     @GET
     @Path("/app/{appName}/info")
     @Produces(MediaType.APPLICATION_JSON)

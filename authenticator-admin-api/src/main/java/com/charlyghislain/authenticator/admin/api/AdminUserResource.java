@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.admin.api.domain.WsResultList;
 import com.charlyghislain.authenticator.admin.api.domain.WsUser;
 import com.charlyghislain.authenticator.admin.api.domain.WsUserApplication;
 import com.charlyghislain.authenticator.admin.api.domain.WsUserFilter;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AdminUserResource {
 
+    @NonNull
     @GET
     @Path("/list")
     WsResultList<WsUser> listUsers(@BeanParam WsUserFilter wsUserFilter, @BeanParam WsPagination wsPagination);
@@ -31,10 +33,12 @@ public interface AdminUserResource {
     @Path("/{id}")
     WsUser getUser(@PathParam("id") Long userId);
 
+    @NonNull
     @POST
     @Path("/")
     WsUser createUser(WsUser wsUser);
 
+    @NonNull
     @PUT
     @Path("/{id}")
     WsUser updateUser(@PathParam("id") Long userId, WsUser wsUser);
@@ -44,15 +48,18 @@ public interface AdminUserResource {
     @Consumes(MediaType.TEXT_PLAIN)
     void updatePassword(@PathParam("id") Long userId, String password);
 
+    @NonNull
     @GET
     @Path("/{id}/application/list")
     WsResultList<WsUserApplication> listUserApplications(@PathParam("id") Long userId,
                                                          @BeanParam WsPagination wsPagination);
 
+    @NonNull
     @PUT
     @Path("/{id}/application/{appId}/state/active")
     WsUserApplication activateUserApplication(@PathParam("id") Long userId, @PathParam("appId") Long applicationId);
 
+    @NonNull
     @DELETE
     @Path("/{id}/application/{appId}/state/active")
     WsUserApplication deactivateUserApplication(@PathParam("id") Long userId, @PathParam("appId") Long applicationId);

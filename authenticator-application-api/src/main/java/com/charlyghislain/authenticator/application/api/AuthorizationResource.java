@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.application.api;
 
 import com.charlyghislain.authenticator.application.api.domain.WsApplicationRole;
 import com.charlyghislain.authenticator.application.api.domain.WsHealthCheckStatus;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,12 +21,14 @@ public interface AuthorizationResource {
      * @param userId the user id for which to retrieve the roles
      * @return a list of roles the user belongs to
      */
+    @NonNull
     @GET
     @Path("/user/{userId}/role/list")
     @Produces(MediaType.APPLICATION_JSON)
     List<WsApplicationRole> listUserRoles(@PathParam("userId") long userId);
 
 
+    @NonNull
     @GET
     @Path("/health")
     WsHealthCheckStatus checkAuthenticatorAuthorization();

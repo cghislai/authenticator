@@ -7,6 +7,7 @@ import com.charlyghislain.authenticator.example.app.domain.WsRegistration;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUserWithPassword;
 import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.glassfish.jersey.media.sse.EventOutput;
@@ -83,11 +84,12 @@ public class ExampleResourceController {
     }
 
 
+    @NonNull
     @GET
     @Path("/events")
     @PermitAll
     @Produces("text/event-stream; charset=utf-8")
-    public EventOutput listenEvents(@Context HttpServletResponse servletResponse) {
+    public EventOutput listenEvents(@NonNull @Context HttpServletResponse servletResponse) {
         servletResponse.setHeader("Connection", "Keep-Alive");
         EventOutput eventOutput = new EventOutput();
         SseBroadcaster sseBroadcaster = new SseBroadcaster();
@@ -101,7 +103,7 @@ public class ExampleResourceController {
     @POST
     @Path("/user")
     @PermitAll
-    public WsApplicationUser register(@Valid WsRegistration registration) throws IOException {
+    public WsApplicationUser register(@NonNull @Valid WsRegistration registration) throws IOException {
         this.broadcastEvent(REGISTRATION_EVENT_ID, "new registration for user " + registration.name);
 
         this.broadcastEvent(REGISTRATION_EVENT_ID, "checking duplicate mail");
@@ -126,6 +128,7 @@ public class ExampleResourceController {
     }
 
 
+    @NonNull
     @POST
     @Path("/user/password")
     @PermitAll

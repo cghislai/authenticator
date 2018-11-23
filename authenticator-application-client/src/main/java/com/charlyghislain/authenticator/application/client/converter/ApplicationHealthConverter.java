@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.application.api.domain.WsHealthCheckResp
 import com.charlyghislain.authenticator.application.api.domain.WsHealthStatus;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationHealth;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -12,7 +13,8 @@ import javax.enterprise.context.ApplicationScoped;
 public class ApplicationHealthConverter {
 
 
-    public ApplicationHealth forApplicationHealthError(Application application, Throwable throwable) {
+    @NonNull
+    public ApplicationHealth forApplicationHealthError(@NonNull Application application, @NonNull Throwable throwable) {
         ApplicationHealth applicationHealth = new ApplicationHealth();
         applicationHealth.setApplicationName(application.getName());
         applicationHealth.setReachable(false);
@@ -21,7 +23,8 @@ public class ApplicationHealthConverter {
         return applicationHealth;
     }
 
-    public ApplicationHealth toApplicationHealth(Application application, WsHealthCheckResponse healthCheckResponse) {
+    @NonNull
+    public ApplicationHealth toApplicationHealth(@NonNull Application application, @NonNull WsHealthCheckResponse healthCheckResponse) {
         ApplicationHealth applicationHealth = new ApplicationHealth();
         applicationHealth.setApplicationName(application.getName());
         applicationHealth.setReachable(true);

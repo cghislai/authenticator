@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.web.provider;
 
 
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.annotation.Priority;
@@ -34,7 +35,7 @@ public class CrossOriginResourceSharingResponseFilter implements ContainerRespon
     private List<String> corsAllowedOrigins;
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext response) {
+    public void filter(@NonNull ContainerRequestContext requestContext, @NonNull ContainerResponseContext response) {
         String origin = requestContext.getHeaderString("Origin");
         boolean originValid = CorsUtils.isOriginValid(origin, corsAllowedOrigins);
         if (originValid) {
@@ -44,7 +45,7 @@ public class CrossOriginResourceSharingResponseFilter implements ContainerRespon
         }
     }
 
-    public void filter(HttpServletResponse servletResponse) {
+    public void filter(@NonNull HttpServletResponse servletResponse) {
         String origin = httpServletRequest.getHeader("Origin");
         boolean originValid = CorsUtils.isOriginValid(origin, corsAllowedOrigins);
         if (originValid) {
@@ -54,7 +55,7 @@ public class CrossOriginResourceSharingResponseFilter implements ContainerRespon
     }
 
 
-    public void filter(Response response) {
+    public void filter(@NonNull Response response) {
         String origin = httpServletRequest.getHeader("Origin");
         boolean originValid = CorsUtils.isOriginValid(origin, corsAllowedOrigins);
         if (originValid) {

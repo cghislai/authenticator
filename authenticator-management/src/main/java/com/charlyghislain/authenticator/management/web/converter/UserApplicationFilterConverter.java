@@ -8,13 +8,17 @@ import com.charlyghislain.authenticator.domain.domain.filter.UserFilter;
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.management.api.domain.WsPagination;
 import com.charlyghislain.authenticator.management.api.domain.WsUserApplicationFilter;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UserApplicationFilterConverter {
 
-    public UserApplicationFilter toUserApplicationFilter(WsUserApplicationFilter wsUserApplicationFilter) {
+    @NonNull
+    public UserApplicationFilter toUserApplicationFilter(@NonNull WsUserApplicationFilter wsUserApplicationFilter) {
         Long userId = wsUserApplicationFilter.getUserId();
         Long applicationId = wsUserApplicationFilter.getApplicationId();
         Boolean active = wsUserApplicationFilter.getActive();
@@ -24,29 +28,28 @@ public class UserApplicationFilterConverter {
         String userNameContains = wsUserApplicationFilter.getUserNameContains();
 
         UserFilter userFilter = new UserFilter();
-        userFilter.setId(userId);
         userFilter.setActive(true);
-        userFilter.setName(userName);
-        userFilter.setEmail(userEmail);
-        userFilter.setNameContains(userNameContains);
+        Optional.ofNullable(userId).ifPresent(userFilter::setId);
+        Optional.ofNullable(userName).ifPresent(userFilter::setName);
+        Optional.ofNullable(userEmail).ifPresent(userFilter::setEmail);
+        Optional.ofNullable(userNameContains).ifPresent(userFilter::setNameContains);
 
 
         ApplicationFilter applicationFilter = new ApplicationFilter();
-        applicationFilter.setId(applicationId);
         applicationFilter.setActive(true);
-        applicationFilter.setName(applicationName);
+        Optional.ofNullable(applicationId).ifPresent(applicationFilter::setId);
+        Optional.ofNullable(applicationName).ifPresent(applicationFilter::setName);
 
         UserApplicationFilter userApplicationFilter = new UserApplicationFilter();
-        userApplicationFilter.setActive(active);
+        Optional.ofNullable(active).ifPresent(userApplicationFilter::setActive);
         userApplicationFilter.setUserFilter(userFilter);
         userApplicationFilter.setApplicationFilter(applicationFilter);
         return userApplicationFilter;
     }
 
-    public Pagination<UserApplication> toPagination(WsPagination input) {
-        if (input == null) {
-            return null;
-        }
+    @NonNull
+    @NotNull
+    public Pagination<UserApplication> toPagination(@NonNull @NotNull WsPagination input) {
         Pagination<UserApplication> result = new Pagination<>();
         result.setOffset(input.getOffset());
         result.setLength(input.getLength());

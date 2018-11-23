@@ -23,6 +23,7 @@ import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.service.RsaKeyPairConverterService;
 import com.charlyghislain.authenticator.ejb.service.RsaKeyPairQueryService;
 import com.charlyghislain.authenticator.ejb.service.RsaKeyPairUpdateService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -45,8 +46,9 @@ public class AdminKeyResourceController implements AdminKeyResource {
     @Inject
     private KeyFilterConverter keyFilterConverter;
 
+    @NonNull
     @Override
-    public WsResultList<WsKey> listKeys(WsKeyFilter wsKeyFilter, WsPagination wsPagination) {
+    public WsResultList<WsKey> listKeys(@NonNull WsKeyFilter wsKeyFilter, WsPagination wsPagination) {
         KeyFilter keyFilter = keyFilterConverter.translateWsKeyFilter(wsKeyFilter);
         Pagination<RsaKeyPair> rsaKeyPairPagination = keyFilterConverter.translateWsPagination(wsPagination);
 
@@ -62,8 +64,9 @@ public class AdminKeyResourceController implements AdminKeyResource {
                 .orElseThrow(this::newNotFoundException);
     }
 
+    @NonNull
     @Override
-    public WsKey createKey(WsKey wsKey) {
+    public WsKey createKey(@NonNull WsKey wsKey) {
         RsaKeyPair key = keyConverter.toRsaKeyPair(wsKey);
         try {
             RsaKeyPair rsaKeyPair = rsaKeyPairUpdateService.createNewKey(key);
@@ -73,8 +76,9 @@ public class AdminKeyResourceController implements AdminKeyResource {
         }
     }
 
+    @NonNull
     @Override
-    public WsKey updateKey(Long keyId, WsKey wsKey) {
+    public WsKey updateKey(Long keyId, @NonNull WsKey wsKey) {
         RsaKeyPair keyUpdate = keyConverter.toRsaKeyPair(wsKey);
         RsaKeyPair key = rsaKeyPairQueryService.findRsaKeyPairById(keyId)
                 .orElseThrow(this::newNotFoundException);
@@ -92,6 +96,7 @@ public class AdminKeyResourceController implements AdminKeyResource {
         }
     }
 
+    @NonNull
     @Override
     public String getPublicKeyPEM(Long keyId) {
         RsaKeyPair key = rsaKeyPairQueryService.findRsaKeyPairById(keyId)

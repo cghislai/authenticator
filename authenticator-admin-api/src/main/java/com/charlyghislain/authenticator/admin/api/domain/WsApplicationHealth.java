@@ -53,11 +53,12 @@ public class WsApplicationHealth implements Serializable {
         this.authenticatorAuthorized = authenticatorAuthorized;
     }
 
+    @Nullable
     public String getApplicationHealthError() {
         return applicationHealthError;
     }
 
-    public void setApplicationHealthError(String applicationHealthError) {
+    public void setApplicationHealthError(@Nullable String applicationHealthError) {
         this.applicationHealthError = applicationHealthError;
     }
 

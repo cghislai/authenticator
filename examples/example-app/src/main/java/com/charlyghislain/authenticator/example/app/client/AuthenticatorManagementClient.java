@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.example.app.client;
 import com.charlyghislain.authenticator.management.api.ConnectivityResource;
 import com.charlyghislain.authenticator.management.api.UserResource;
 import com.charlyghislain.authenticator.management.api.domain.*;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
@@ -64,7 +65,7 @@ public class AuthenticatorManagementClient {
         return this.managementUserResource.createNewPasswordResetToken(userId);
     }
 
-    public WsApplicationUser setPassword(WsApplicationUser applicationUser, String password) {
+    public WsApplicationUser setPassword(@NonNull WsApplicationUser applicationUser, String password) {
         return this.managementUserResource.updateUserPassword(applicationUser.getId(), password);
     }
 

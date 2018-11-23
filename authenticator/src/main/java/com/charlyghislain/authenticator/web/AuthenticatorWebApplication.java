@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.web.provider.CrossOriginResourceSharingR
 import com.charlyghislain.authenticator.web.provider.CrossOriginResourceSharingResponseFilter;
 import com.charlyghislain.authenticator.web.provider.ThrowableExceptionMapper;
 import com.charlyghislain.authenticator.web.provider.WebApplicationExceptionMapper;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.DeclareRoles;
 import javax.ws.rs.ApplicationPath;
@@ -17,6 +18,7 @@ import java.util.Set;
 @DeclareRoles(AuthenticatorConstants.ROLE_USER)
 public class AuthenticatorWebApplication extends Application {
 
+    @NonNull
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();

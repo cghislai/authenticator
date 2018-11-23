@@ -38,6 +38,7 @@ public class AuthenticatorAdminWebException extends RuntimeException {
         return code;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }

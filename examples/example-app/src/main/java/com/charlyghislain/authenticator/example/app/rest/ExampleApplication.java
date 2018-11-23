@@ -1,6 +1,7 @@
 package com.charlyghislain.authenticator.example.app.rest;
 
 import com.charlyghislain.authenticator.example.app.ApplicationRoles;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.auth.LoginConfig;
 
 import javax.annotation.security.DeclareRoles;
@@ -14,6 +15,7 @@ import java.util.Set;
 @DeclareRoles({ApplicationRoles.EXAMPLE_ROLE, ApplicationRoles.AUTHENTICATOR_APP_ROLE})
 public class ExampleApplication extends Application {
 
+    @NonNull
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();

@@ -3,15 +3,17 @@ package com.charlyghislain.authenticator.admin.web.converter;
 import com.charlyghislain.authenticator.admin.api.domain.WsApplicationHealth;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationAuthenticatorAuthorizationHealth;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationHealth;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class WsApplicationHealthConverter {
 
+    @NonNull
     public WsApplicationHealth toWsApplicationHealth(
-            ApplicationHealth applicationHealth,
-            ApplicationAuthenticatorAuthorizationHealth authorizationHealth) {
+            @NonNull ApplicationHealth applicationHealth,
+            @NonNull ApplicationAuthenticatorAuthorizationHealth authorizationHealth) {
 
         boolean reachable = applicationHealth.isReachable() || authorizationHealth.isReachable();
 

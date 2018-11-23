@@ -18,6 +18,7 @@ public class WsApplicationUser implements Serializable {
     private boolean passwordExpired;
     private boolean emailVerified;
 
+    @Nullable
     public Long getId() {
         return id;
     }

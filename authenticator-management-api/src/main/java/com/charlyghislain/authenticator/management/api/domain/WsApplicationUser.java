@@ -16,6 +16,7 @@ public class WsApplicationUser {
     private boolean emailVerified;
     private boolean passwordExpired;
 
+    @Nullable
     public Long getId() {
         return id;
     }

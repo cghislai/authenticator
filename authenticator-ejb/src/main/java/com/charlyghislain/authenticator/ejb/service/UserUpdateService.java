@@ -13,6 +13,7 @@ import com.charlyghislain.authenticator.domain.domain.validation.ValidEmail;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifierName;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidPassword;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class UserUpdateService {
     }
 
     //    @DenyAll
-    public User createUserNoChecks(User user) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public User createUserNoChecks(@NonNull User user) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = user.getName();
         String email = user.getEmail();
 
@@ -66,7 +67,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
-    public User createUser(User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public User createUser(@NonNull User newUser) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = newUser.getName();
         String email = newUser.getEmail();
         boolean admin = newUser.isAdmin();
@@ -88,7 +89,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
-    public User updateUser(@NotNull User existingUser, User userUpdate) throws NameAlreadyExistsException, EmailAlreadyExistsException, AdminCannotLockHerselfOutException {
+    public User updateUser(@NonNull @NotNull User existingUser, @NonNull User userUpdate) throws NameAlreadyExistsException, EmailAlreadyExistsException, AdminCannotLockHerselfOutException {
         String name = userUpdate.getName();
         String email = userUpdate.getEmail();
         boolean admin = userUpdate.isAdmin();
@@ -120,8 +121,8 @@ public class UserUpdateService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_APPLICATION, AuthenticatorConstants.ROLE_ADMIN})
-    public UserApplication createApplicationUser(@NotNull Application application, User newUser,
-                                                 @ValidPassword String newUserPassword) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+    public UserApplication createApplicationUser(@NotNull Application application, @NonNull User newUser,
+                                                 @NonNull @ValidPassword String newUserPassword) throws NameAlreadyExistsException, EmailAlreadyExistsException {
         String name = newUser.getName();
         String email = newUser.getEmail();
         boolean active = newUser.isActive();
@@ -155,7 +156,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
-    public UserApplication setUserApplicationActive(@NotNull UserApplication existinUserApplication, boolean active) {
+    public UserApplication setUserApplicationActive(@NonNull @NotNull UserApplication existinUserApplication, boolean active) {
 
         existinUserApplication.setActive(active);
 
@@ -163,7 +164,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed({AuthenticatorConstants.ROLE_APPLICATION})
-    public UserApplication updateApplicationUser(@NotNull UserApplication userApplication, User userUpdate) {
+    public UserApplication updateApplicationUser(@NonNull @NotNull UserApplication userApplication, @NonNull User userUpdate) {
         boolean active = userUpdate.isActive();
 
         userApplication.setActive(active);
@@ -173,7 +174,7 @@ public class UserUpdateService {
 
 
     @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN, AuthenticatorConstants.ROLE_APPLICATION})
-    public void forgetApplicationUser(@NotNull UserApplication userApplication) {
+    public void forgetApplicationUser(@NonNull @NotNull UserApplication userApplication) {
         Application application = userApplication.getApplication();
         User user = userApplication.getUser();
         Long userId = user.getId();
@@ -189,7 +190,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
-    public UserApplication linkUserToApplicationOnTokenRequest(@NotNull User user, @NotNull Application application) throws UnauthorizedOperationException {
+    public UserApplication linkUserToApplicationOnTokenRequest(@NonNull @NotNull User user, @NonNull @NotNull Application application) throws UnauthorizedOperationException {
         checkIsCallerUser(user);
         checkIsActive(user);
         checkDoesNotHaveApplication(user, application);
@@ -213,7 +214,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
-    public void unlinkUserToApplication(@NotNull UserApplication userApplication) throws UnauthorizedOperationException {
+    public void unlinkUserToApplication(@NonNull @NotNull UserApplication userApplication) throws UnauthorizedOperationException {
         User user = userApplication.getUser();
         Application application = userApplication.getApplication();
         Long userId = user.getId();
@@ -233,7 +234,7 @@ public class UserUpdateService {
 
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
-    public User updateUserName(@NotNull User user, @ValidIdentifierName String name) throws UnauthorizedOperationException, NameAlreadyExistsException {
+    public User updateUserName(@NonNull @NotNull User user, @ValidIdentifierName String name) throws UnauthorizedOperationException, NameAlreadyExistsException {
         checkIsCallerUser(user);
         checkIsActive(user);
         checkDuplicateName(user, name);
@@ -243,7 +244,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
-    public User updateUserEmail(@NotNull User user, @ValidEmail String email) throws UnauthorizedOperationException, EmailAlreadyExistsException {
+    public User updateUserEmail(@NonNull @NotNull User user, @ValidEmail String email) throws UnauthorizedOperationException, EmailAlreadyExistsException {
         checkIsCallerUser(user);
         checkIsActive(user);
         checkDuplicateEmail(user, email);
@@ -259,7 +260,7 @@ public class UserUpdateService {
     }
 
     @RolesAllowed(AuthenticatorConstants.ROLE_USER)
-    public User updateUserPassword(@NotNull User user, @ValidPassword String plainPassword) throws UnauthorizedOperationException {
+    public User updateUserPassword(@NonNull @NotNull User user, @NonNull @ValidPassword String plainPassword) throws UnauthorizedOperationException {
         checkIsCallerUser(user);
         checkIsActive(user);
 
@@ -271,7 +272,7 @@ public class UserUpdateService {
     }
 
     @PermitAll
-    public User resetUserPassword(@NotNull User user, @ValidPassword String plainPassword, @NotNull String resetToken) throws UnauthorizedOperationException {
+    public User resetUserPassword(@NonNull @NotNull User user, @NonNull @ValidPassword String plainPassword, @NotNull String resetToken) throws UnauthorizedOperationException {
         checkIsActive(user);
         validatePasswordResetToken(user, resetToken);
 
@@ -292,7 +293,7 @@ public class UserUpdateService {
 
 
     @RolesAllowed(AuthenticatorConstants.ROLE_APPLICATION)
-    public UserApplication updateApplicationUserPassword(@NotNull UserApplication userApplication, @ValidPassword String plainPassword) throws UnauthorizedOperationException {
+    public UserApplication updateApplicationUserPassword(@NonNull @NotNull UserApplication userApplication, @NonNull @ValidPassword String plainPassword) throws UnauthorizedOperationException {
         Application application = userApplication.getApplication();
         checkApplicationCanResetPasswords(application);
 
@@ -314,7 +315,7 @@ public class UserUpdateService {
 
 
     @RolesAllowed(AuthenticatorConstants.ROLE_ADMIN)
-    public User setUserPassword(@NotNull User user, @ValidPassword String plainPassword) {
+    public User setUserPassword(@NonNull @NotNull User user, @NonNull @ValidPassword String plainPassword) {
         String hashedPassword = passwordHash.generate(plainPassword.toCharArray());
 
         user.setPassword(hashedPassword);
@@ -429,7 +430,7 @@ public class UserUpdateService {
     }
 
 
-    private void checkIsCallerUser(User user) throws UnauthorizedOperationException {
+    private void checkIsCallerUser(@NonNull User user) throws UnauthorizedOperationException {
         if (isCallerUser(user)) {
             return;
         }
@@ -437,7 +438,7 @@ public class UserUpdateService {
     }
 
 
-    private void checkDoesNotHaveApplication(User user, Application application) throws UnauthorizedOperationException {
+    private void checkDoesNotHaveApplication(@NonNull User user, @NonNull Application application) throws UnauthorizedOperationException {
         boolean hasApplication = userQueryService.findUserApplication(user, application).isPresent();
         if (hasApplication) {
             throw new UnauthorizedOperationException();
@@ -465,7 +466,7 @@ public class UserUpdateService {
     }
 
 
-    private User saveUser(@Valid User user) {
+    private User saveUser(@NonNull @Valid User user) {
         checkUserHasPassword(user);
         User managedUser = entityManager.merge(user);
         return managedUser;

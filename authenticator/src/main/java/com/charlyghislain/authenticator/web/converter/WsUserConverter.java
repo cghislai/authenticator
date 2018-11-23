@@ -3,13 +3,15 @@ package com.charlyghislain.authenticator.web.converter;
 
 import com.charlyghislain.authenticator.api.domain.WsUser;
 import com.charlyghislain.authenticator.domain.domain.User;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class WsUserConverter {
 
-    public WsUser toWsuser(User user) {
+    @NonNull
+    public WsUser toWsuser(@NonNull User user) {
         Long id = user.getId();
         String name = user.getName();
         String email = user.getEmail();

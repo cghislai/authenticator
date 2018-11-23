@@ -19,30 +19,34 @@ public class UserApplicationFilter {
     @NonNull
     private UserFilter userFilter = new UserFilter();
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(@Nullable Boolean active) {
         this.active = active;
     }
 
+    @NonNull
     public ApplicationFilter getApplicationFilter() {
         return applicationFilter;
     }
 
-    public void setApplicationFilter(ApplicationFilter applicationFilter) {
+    public void setApplicationFilter(@NonNull ApplicationFilter applicationFilter) {
         this.applicationFilter = applicationFilter;
     }
 
+    @NonNull
     public UserFilter getUserFilter() {
         return userFilter;
     }
 
-    public void setUserFilter(UserFilter userFilter) {
+    public void setUserFilter(@NonNull UserFilter userFilter) {
         this.userFilter = userFilter;
     }
 
+    @Nullable
     public Application getApplication() {
         return application;
     }
@@ -51,6 +55,7 @@ public class UserApplicationFilter {
         this.application = application;
     }
 
+    @Nullable
     public User getUser() {
         return user;
     }

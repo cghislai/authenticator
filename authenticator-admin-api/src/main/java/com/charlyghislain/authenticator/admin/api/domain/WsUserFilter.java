@@ -35,6 +35,7 @@ public class WsUserFilter {
     @QueryParam("admin")
     private Boolean admin;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -43,6 +44,7 @@ public class WsUserFilter {
         this.id = id;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
@@ -51,6 +53,7 @@ public class WsUserFilter {
         this.name = name;
     }
 
+    @Nullable
     public String getNameContains() {
         return nameContains;
     }
@@ -59,6 +62,7 @@ public class WsUserFilter {
         this.nameContains = nameContains;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -67,6 +71,7 @@ public class WsUserFilter {
         this.active = active;
     }
 
+    @Nullable
     public Boolean getPasswordExpired() {
         return passwordExpired;
     }
@@ -75,6 +80,7 @@ public class WsUserFilter {
         this.passwordExpired = passwordExpired;
     }
 
+    @Nullable
     public Boolean getAdmin() {
         return admin;
     }
@@ -83,6 +89,7 @@ public class WsUserFilter {
         this.admin = admin;
     }
 
+    @Nullable
     public String getEmail() {
         return email;
     }

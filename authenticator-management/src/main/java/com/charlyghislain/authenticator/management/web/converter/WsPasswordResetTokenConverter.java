@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.management.web.converter;
 
 import com.charlyghislain.authenticator.domain.domain.PasswordResetToken;
 import com.charlyghislain.authenticator.management.api.domain.WsPasswordResetToken;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ import java.time.ZonedDateTime;
 @ApplicationScoped
 public class WsPasswordResetTokenConverter {
 
-    public WsPasswordResetToken toWsPasswordResetToken(PasswordResetToken passwordResetToken) {
+    @NonNull
+    public WsPasswordResetToken toWsPasswordResetToken(@NonNull PasswordResetToken passwordResetToken) {
         String token = passwordResetToken.getToken();
         LocalDateTime creationTime = passwordResetToken.getCreationTime();
         LocalDateTime expirationTime = passwordResetToken.getExpirationTime();

@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOper
 import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ public class CallerQueryService {
     @Inject
     private ApplicationQueryService applicationQueryService;
 
+    @NonNull
     public Optional<User> findCallerUser() {
         return userQueryService.findUserByName(callerPrincipal.getName());
     }
@@ -63,7 +65,8 @@ public class CallerQueryService {
         return name.startsWith(AuthenticatorConstants.ROLE_APPLICATION_RESTRICTION);
     }
 
-    public String createApplicationPrincipalName(Application application) {
+    @NonNull
+    public String createApplicationPrincipalName(@NonNull Application application) {
         return AuthenticatorConstants.APPLICATION_PRINCIPAL_NAME_PREFIX + application.getName();
     }
 

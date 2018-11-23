@@ -28,6 +28,7 @@ import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.service.ApplicationQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserUpdateService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -54,6 +55,7 @@ public class AdminUserResourceController implements AdminUserResource {
     @Inject
     private UserApplicationFilterConverter userApplicationFilterConverter;
 
+    @NonNull
     @Override
     public WsResultList<WsUser> listUsers(WsUserFilter wsUserFilter, WsPagination wsPagination) {
         Pagination<User> pagination = userFilterConverter.translateWsPagination(wsPagination);
@@ -72,9 +74,10 @@ public class AdminUserResourceController implements AdminUserResource {
                 .orElseThrow(this::newNotFoundException);
     }
 
+    @NonNull
     @Override
     public WsUser createUser(WsUser wsUser) {
-        User user = userConverter.translateWsUser(wsUser);
+        User user = userConverter.toUser(wsUser);
         try {
             User createdUser = userUpdateService.createUser(user);
             return wsUserConverter.toWsuser(createdUser);
@@ -85,9 +88,10 @@ public class AdminUserResourceController implements AdminUserResource {
         }
     }
 
+    @NonNull
     @Override
     public WsUser updateUser(Long userId, WsUser wsUser) {
-        User user = userConverter.translateWsUser(wsUser);
+        User user = userConverter.toUser(wsUser);
         User existingUser = userQueryService.findUserById(userId)
                 .orElseThrow(this::newNotFoundException);
         try {
@@ -103,17 +107,18 @@ public class AdminUserResourceController implements AdminUserResource {
     }
 
     @Override
-    public void updatePassword(Long userId, String password) {
+    public void updatePassword(Long userId, @NonNull String password) {
         User existingUser = userQueryService.findUserById(userId)
                 .orElseThrow(this::newNotFoundException);
         userUpdateService.setUserPassword(existingUser, password);
     }
 
+    @NonNull
     @Override
-    public WsResultList<WsUserApplication> listUserApplications(Long userId, WsPagination wsPagination) {
+    public WsResultList<WsUserApplication> listUserApplications(Long userId, @NonNull WsPagination wsPagination) {
         userQueryService.findUserById(userId)
                 .orElseThrow(this::newNotFoundException);
-        Pagination<UserApplication> pagination = userApplicationFilterConverter.translateWsPagination(wsPagination);
+        Pagination<UserApplication> pagination = userApplicationFilterConverter.toWsPagination(wsPagination);
 
         UserApplicationFilter userApplicationFilter = new UserApplicationFilter();
         userApplicationFilter.getUserFilter().setId(userId);
@@ -123,6 +128,7 @@ public class AdminUserResourceController implements AdminUserResource {
         return new WsResultList<>(wsUserApplications, userApplications.getTotalCount());
     }
 
+    @NonNull
     @Override
     public WsUserApplication activateUserApplication(Long userId, Long applicationId) {
         User user = userQueryService.findUserById(userId)
@@ -136,6 +142,7 @@ public class AdminUserResourceController implements AdminUserResource {
         return wsUserApplicationConverter.toWsUserApplication(updatedUserApplication);
     }
 
+    @NonNull
     @Override
     public WsUserApplication deactivateUserApplication(Long userId, Long applicationId) {
         User user = userQueryService.findUserById(userId)

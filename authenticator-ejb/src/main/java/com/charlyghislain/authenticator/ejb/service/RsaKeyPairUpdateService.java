@@ -10,6 +10,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExist
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class RsaKeyPairUpdateService {
     private String authenticatorName;
 
 
-    public RsaKeyPair createNewKey(RsaKeyPair newKey) throws NameAlreadyExistsException {
+    public RsaKeyPair createNewKey(@NonNull RsaKeyPair newKey) throws NameAlreadyExistsException {
         String name = newKey.getName();
         boolean forApplicationSecrets = newKey.isForApplicationSecrets();
         Optional<Application> keyApplication = newKey.getApplication();
@@ -75,7 +76,7 @@ public class RsaKeyPairUpdateService {
         return managedKeyPair;
     }
 
-    public RsaKeyPair updateKey(@NotNull RsaKeyPair existingKey, RsaKeyPair keyUpdate) throws NameAlreadyExistsException, KeyScopeChangedException, KeyIsLastActiveInScopeException, CannotDeactivateSigningKey {
+    public RsaKeyPair updateKey(@NonNull @NotNull RsaKeyPair existingKey, @NonNull RsaKeyPair keyUpdate) throws NameAlreadyExistsException, KeyScopeChangedException, KeyIsLastActiveInScopeException, CannotDeactivateSigningKey {
         String name = keyUpdate.getName();
         boolean forApplicationSecrets = keyUpdate.isForApplicationSecrets();
         Optional<Application> keyApplication = keyUpdate.getApplication();
@@ -98,11 +99,11 @@ public class RsaKeyPairUpdateService {
         return managedKeyPair;
     }
 
-    public RsaKeyPair setSigningKey(RsaKeyPair keyPair) {
+    public RsaKeyPair setSigningKey(@NonNull RsaKeyPair keyPair) {
         KeyFilter keyFilter = new KeyFilter();
         keyFilter.setSigningKey(true);
         keyFilter.setForApplicationSecrets(keyPair.isForApplicationSecrets());
-        keyFilter.setApplication(keyPair.getApplication().orElse(null));
+        keyPair.getApplication().ifPresent(keyFilter::setApplication);
         ResultList<RsaKeyPair> previousSigningKeys = rsaKeyPairQueryService.findAllRsaKeyPairs(keyFilter);
 
         keyPair.setSigningKey(true);
@@ -121,7 +122,7 @@ public class RsaKeyPairUpdateService {
     }
 
     private void checkKeyScopeChanges(RsaKeyPair existingKey, boolean forApplicationSecrets,
-                                      Optional<Application> applicationScope) throws KeyScopeChangedException {
+                                      @NonNull Optional<Application> applicationScope) throws KeyScopeChangedException {
         if (forApplicationSecrets != existingKey.isForApplicationSecrets()) {
             throw new KeyScopeChangedException();
         }
@@ -136,8 +137,8 @@ public class RsaKeyPairUpdateService {
         }
     }
 
-    private void checkDeactivation(RsaKeyPair existingKey, boolean wasActive, boolean active,
-                                   Optional<Application> applicationScope, boolean forApplicationSecrets) throws KeyIsLastActiveInScopeException, CannotDeactivateSigningKey {
+    private void checkDeactivation(@NonNull RsaKeyPair existingKey, boolean wasActive, boolean active,
+                                   @NonNull Optional<Application> applicationScope, boolean forApplicationSecrets) throws KeyIsLastActiveInScopeException, CannotDeactivateSigningKey {
         if (active || !wasActive) {
             return;
         }
@@ -150,7 +151,7 @@ public class RsaKeyPairUpdateService {
         }
     }
 
-    private void checkLastActiveKeyForApplication(RsaKeyPair existingKey, Optional<Application> applicationScope) throws KeyIsLastActiveInScopeException {
+    private void checkLastActiveKeyForApplication(@NonNull RsaKeyPair existingKey, Optional<Application> applicationScope) throws KeyIsLastActiveInScopeException {
         // Cannot deactivate the last key for a application scope
         KeyFilter keyPairFilter = new KeyFilter();
         keyPairFilter.setActive(true);
@@ -169,7 +170,7 @@ public class RsaKeyPairUpdateService {
         }
     }
 
-    private void checkLastActiveKeyForApplicationSecrets(RsaKeyPair existingKey) throws KeyIsLastActiveInScopeException {
+    private void checkLastActiveKeyForApplicationSecrets(@NonNull RsaKeyPair existingKey) throws KeyIsLastActiveInScopeException {
         // Cannot deactivate the last key to sign application secrets
         KeyFilter keyPairFilter = new KeyFilter();
         keyPairFilter.setActive(true);
@@ -182,7 +183,7 @@ public class RsaKeyPairUpdateService {
         }
     }
 
-    private void checkDuplicateName(RsaKeyPair existingKey, String name) throws NameAlreadyExistsException {
+    private void checkDuplicateName(@NonNull RsaKeyPair existingKey, String name) throws NameAlreadyExistsException {
         KeyFilter keyPairFilter = new KeyFilter();
         keyPairFilter.setName(name);
         boolean hasDuplicateName = rsaKeyPairQueryService.findAllRsaKeyPairs(keyPairFilter)
@@ -203,7 +204,7 @@ public class RsaKeyPairUpdateService {
     }
 
 
-    private RsaKeyPair generateKeyPair(RsaKeyPair keyPair) {
+    private RsaKeyPair generateKeyPair(@NonNull RsaKeyPair keyPair) {
         if (unsafeFeaturesEnabled && unsafeDeterministicKeys) {
             if (keyPair.getApplication().isPresent()) {
                 return this.generateUnsafeApplicationKeyPair(keyPair.getApplication().get());

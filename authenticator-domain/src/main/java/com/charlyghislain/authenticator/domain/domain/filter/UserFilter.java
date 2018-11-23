@@ -20,6 +20,7 @@ public class UserFilter {
     @Nullable
     private Boolean admin;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -28,6 +29,7 @@ public class UserFilter {
         this.id = id;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -36,6 +38,7 @@ public class UserFilter {
         this.active = active;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
@@ -44,6 +47,7 @@ public class UserFilter {
         this.name = name;
     }
 
+    @Nullable
     public String getEmail() {
         return email;
     }
@@ -52,6 +56,7 @@ public class UserFilter {
         this.email = email;
     }
 
+    @Nullable
     public String getNameContains() {
         return nameContains;
     }
@@ -60,6 +65,7 @@ public class UserFilter {
         this.nameContains = nameContains;
     }
 
+    @Nullable
     public Boolean getPasswordExpired() {
         return passwordExpired;
     }
@@ -68,6 +74,7 @@ public class UserFilter {
         this.passwordExpired = passwordExpired;
     }
 
+    @Nullable
     public Boolean getAdmin() {
         return admin;
     }

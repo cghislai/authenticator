@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.management.web.provider;
 
 import com.charlyghislain.authenticator.admin.api.domain.WsError;
 import com.charlyghislain.authenticator.admin.api.error.AuthenticatorAdminWebError;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
 
 
     @Override
-    public Response toResponse(WebApplicationException exception) {
+    public Response toResponse(@NonNull WebApplicationException exception) {
         LOG.warn("Uncaught exception while serving request", exception);
 
         WsError wsError = new WsError();

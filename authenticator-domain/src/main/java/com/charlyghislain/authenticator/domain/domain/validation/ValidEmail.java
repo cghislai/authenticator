@@ -1,6 +1,8 @@
 package com.charlyghislain.authenticator.domain.domain.validation;
 
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
@@ -13,10 +15,10 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface ValidEmail {
 
-    String message() default "com.charlyghislain.authenticator.domain.domain.validation.ValidEmail.message";
+    @NonNull String message() default "com.charlyghislain.authenticator.domain.domain.validation.ValidEmail.message";
 
-    Class<?>[] groups() default {};
+    @NonNull Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+    @NonNull Class<? extends Payload>[] payload() default {};
 
 }

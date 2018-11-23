@@ -19,6 +19,7 @@ public class WsUserApplication {
     private String userName;
     private boolean active;
 
+    @Nullable
     public Long getId() {
         return id;
     }

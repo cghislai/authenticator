@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.management.web.converter;
 
 import com.charlyghislain.authenticator.domain.domain.EmailVerificationToken;
 import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ import java.time.ZonedDateTime;
 @ApplicationScoped
 public class WsEmailVerificationTokenConverter {
 
-    public WsEmailVerificationToken toWsEmailVerificationToken(EmailVerificationToken emailVerificationToken) {
+    @NonNull
+    public WsEmailVerificationToken toWsEmailVerificationToken(@NonNull EmailVerificationToken emailVerificationToken) {
         String token = emailVerificationToken.getToken();
         LocalDateTime creationTime = emailVerificationToken.getCreationTime();
         LocalDateTime expirationTime = emailVerificationToken.getExpirationTime();

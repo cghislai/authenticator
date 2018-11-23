@@ -22,6 +22,7 @@ public class KeyFilter {
     @Nullable
     private String nameContains;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -30,6 +31,7 @@ public class KeyFilter {
         this.id = id;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -38,6 +40,7 @@ public class KeyFilter {
         this.active = active;
     }
 
+    @Nullable
     public Boolean getForApplicationSecrets() {
         return forApplicationSecrets;
     }
@@ -46,6 +49,7 @@ public class KeyFilter {
         this.forApplicationSecrets = forApplicationSecrets;
     }
 
+    @Nullable
     public Boolean getSigningKey() {
         return signingKey;
     }
@@ -54,6 +58,7 @@ public class KeyFilter {
         this.signingKey = signingKey;
     }
 
+    @Nullable
     public Boolean getForApplication() {
         return forApplication;
     }
@@ -62,6 +67,7 @@ public class KeyFilter {
         this.forApplication = forApplication;
     }
 
+    @Nullable
     public Application getApplication() {
         return application;
     }
@@ -70,6 +76,7 @@ public class KeyFilter {
         this.application = application;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
@@ -78,6 +85,7 @@ public class KeyFilter {
         this.name = name;
     }
 
+    @Nullable
     public String getNameContains() {
         return nameContains;
     }

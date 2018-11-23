@@ -1,5 +1,7 @@
 package com.charlyghislain.authenticator.example.app.test;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +15,7 @@ public class TestServlet extends HttpServlet {
 
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(@NonNull HttpServletRequest req, @NonNull HttpServletResponse resp) throws ServletException, IOException {
         String requestedResource = req.getRequestURI().replaceAll("/test/", "");
         if (requestedResource.isEmpty()) {
             resp.sendRedirect("index.html");

@@ -4,6 +4,7 @@ package com.charlyghislain.authenticator.domain.domain;
 import com.charlyghislain.authenticator.domain.domain.util.WithId;
 import com.charlyghislain.authenticator.domain.domain.util.WithName;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifierName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -62,6 +63,7 @@ public class RsaKeyPair implements WithId, WithName {
 
     @JoinColumn(name = "application_id")
     @OneToOne
+    @Nullable
     private Application application;
 
     public Long getId() {
@@ -124,7 +126,7 @@ public class RsaKeyPair implements WithId, WithName {
         return Optional.ofNullable(application);
     }
 
-    public void setApplication(Application application) {
+    public void setApplication(@Nullable Application application) {
         this.application = application;
     }
 
@@ -145,7 +147,7 @@ public class RsaKeyPair implements WithId, WithName {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

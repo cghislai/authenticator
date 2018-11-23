@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.web.security;
 
 
 import com.charlyghislain.authenticator.web.provider.CrossOriginResourceSharingResponseFilter;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ public class CompositeHttpAuthenticationMechanism implements HttpAuthenticationM
     private CrossOriginResourceSharingResponseFilter crossOriginResourceSharingResponseFilter;
 
     @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
+    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, @NonNull HttpMessageContext httpMessageContext) throws AuthenticationException {
         CredentialValidationResult validationResult = StreamSupport.stream(httpCredentialProviders.spliterator(), false)
                 .map(provider -> provider.extractCredential(request))
                 .filter(Optional::isPresent)
@@ -37,7 +38,7 @@ public class CompositeHttpAuthenticationMechanism implements HttpAuthenticationM
         return this.handleValidationResult(validationResult, httpMessageContext);
     }
 
-    private AuthenticationStatus handleValidationResult(CredentialValidationResult validationResult, HttpMessageContext httpMessageContext) {
+    private AuthenticationStatus handleValidationResult(CredentialValidationResult validationResult, @NonNull HttpMessageContext httpMessageContext) {
         if (validationResult.getStatus() == CredentialValidationResult.Status.VALID) {
             // Valid
             return httpMessageContext.notifyContainerAboutLogin(validationResult);

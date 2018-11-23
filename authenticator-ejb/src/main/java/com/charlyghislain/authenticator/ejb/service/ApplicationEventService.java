@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.domain.client.ApplicationUserEventsClien
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ public class ApplicationEventService {
     @Inject
     private ApplicationUserEventsClient userEventsClient;
 
-    public void notifyUserAdded(UserApplication userApplication) {
+    public void notifyUserAdded(@NonNull UserApplication userApplication) {
         Application application = userApplication.getApplication();
         String tokenForApplication = tokenService.generateAuthenticatorTokenForApplication(application);
 
@@ -25,19 +26,19 @@ public class ApplicationEventService {
     }
 
 
-    public void notifiyEmailVerified(User user) {
+    public void notifiyEmailVerified(@NonNull User user) {
         user.getUserApplications()
                 .forEach(this::notifiyEmailVerified);
     }
 
-    public void notifiyEmailVerified(UserApplication userApplication) {
+    public void notifiyEmailVerified(@NonNull UserApplication userApplication) {
         Application application = userApplication.getApplication();
         String tokenForApplication = tokenService.generateAuthenticatorTokenForApplication(application);
 
         userEventsClient.notifyEmailVerified(tokenForApplication, userApplication);
     }
 
-    public void notifyUserRemoved(Application application, Long userId) {
+    public void notifyUserRemoved(@NonNull Application application, Long userId) {
         String tokenForApplication = tokenService.generateAuthenticatorTokenForApplication(application);
 
         userEventsClient.notifyUserRemoved(tokenForApplication, application, userId);

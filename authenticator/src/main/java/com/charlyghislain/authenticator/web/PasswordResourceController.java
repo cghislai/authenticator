@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
 import com.charlyghislain.authenticator.ejb.service.UserQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserUpdateService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ public class PasswordResourceController implements PasswordResource {
     private UserQueryService userQueryService;
 
     @Override
-    public void resetPassword(WsPasswordReset wsPasswordReset) {
+    public void resetPassword(@NonNull WsPasswordReset wsPasswordReset) {
         Long userId = wsPasswordReset.getUserId();
         String resetToken = wsPasswordReset.getResetToken();
         String password = wsPasswordReset.getPassword();

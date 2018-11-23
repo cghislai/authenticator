@@ -30,11 +30,12 @@ public class ApplicationHealth implements Serializable {
         this.healthy = healthy;
     }
 
+    @Nullable
     public String getError() {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(@Nullable String error) {
         this.error = error;
     }
 

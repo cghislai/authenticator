@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.application.client.provider;
 
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @ApplicationScoped
 public class RestClientProvider {
 
-    public <T> T createResource(String authToken, Application application, Class<T> resourceType) {
+    public <T> T createResource(String authToken, @NonNull Application application, Class<T> resourceType) {
         URL endpointURL = getApplicationEndpointUrl(application);
         RestClientBuilder clientBuilder = RestClientBuilder.newBuilder()
                 .baseUrl(endpointURL)

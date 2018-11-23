@@ -5,11 +5,13 @@ import com.charlyghislain.authenticator.application.api.domain.WsApplicationUser
 import com.charlyghislain.authenticator.example.app.ApplicationRoles;
 import com.charlyghislain.authenticator.example.app.client.AuthenticatorManagementClient;
 import com.charlyghislain.authenticator.management.api.domain.WsEmailVerificationToken;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.glassfish.jersey.media.sse.OutboundEvent;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -25,8 +27,9 @@ public class UserEventResourceController implements UserEventResource {
     @Inject
     private AuthenticatorManagementClient managementClient;
 
+    @NonNull
     @Override
-    public CompletionStage<Void> userAdded(WsApplicationUser wsApplicationUser) {
+    public CompletionStage<Void> userAdded(@NonNull WsApplicationUser wsApplicationUser) {
         this.broadcastEvent(USER_ADDED_EVENT_ID, "id: " + wsApplicationUser.getId());
 
         boolean emailVerified = wsApplicationUser.isEmailVerified();
@@ -43,8 +46,9 @@ public class UserEventResourceController implements UserEventResource {
     }
 
 
+    @NonNull
     @Override
-    public CompletionStage<Void> userEmailVerified(WsApplicationUser wsApplicationUser) {
+    public CompletionStage<Void> userEmailVerified(@NonNull WsApplicationUser wsApplicationUser) {
         this.broadcastEvent(EMAIL_VERIFIED_EVENT_ID, "id: " + wsApplicationUser.getId());
 
         setUserActive(EMAIL_VERIFIED_EVENT_ID, wsApplicationUser);
@@ -52,6 +56,7 @@ public class UserEventResourceController implements UserEventResource {
         return CompletableFuture.completedFuture(null);
     }
 
+    @NonNull
     @Override
     public CompletionStage<Void> userRemoved(Long id) {
         this.broadcastEvent("user-removed", "id: " + id);
@@ -74,9 +79,10 @@ public class UserEventResourceController implements UserEventResource {
 
     private void setUserActive(String eventId, WsApplicationUser wsApplicationUser) {
         boolean active = wsApplicationUser.isActive();
+        Long userId = Optional.ofNullable(wsApplicationUser.getId()).orElseThrow(IllegalStateException::new);
         if (!active) {
             this.broadcastEvent(eventId, "User not yet active. Setting active");
-            managementClient.setUserActive(wsApplicationUser.getId());
+            managementClient.setUserActive(userId);
             this.broadcastEvent(eventId, "User is active");
         } else {
             this.broadcastEvent(eventId, "User is already active");

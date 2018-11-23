@@ -1,8 +1,11 @@
 package com.charlyghislain.authenticator.example.app.validation;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 public class CharacterValidationUtils {
 
-    public static boolean allMatch(CharSequence value, CharSequence characterListToMatch) {
+    public static boolean allMatch(@Nullable CharSequence value, @NonNull CharSequence characterListToMatch) {
         if (value == null) {
             return false;
         }
@@ -12,7 +15,7 @@ public class CharacterValidationUtils {
     }
 
 
-    public static boolean anyMatch(CharSequence value, CharSequence characterListToMatch) {
+    public static boolean anyMatch(@Nullable CharSequence value, @NonNull CharSequence characterListToMatch) {
         if (value == null) {
             return false;
         }

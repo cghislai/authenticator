@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.admin.api.domain.WsKey;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.ejb.service.ApplicationQueryService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,7 +19,8 @@ public class KeyConverter {
     @Inject
     private ApplicationQueryService applicationQueryService;
 
-    public RsaKeyPair toRsaKeyPair(WsKey wsKey) {
+    @NonNull
+    public RsaKeyPair toRsaKeyPair(@NonNull WsKey wsKey) {
         Long id = wsKey.getId();
         String name = wsKey.getName();
         boolean active = wsKey.isActive();
@@ -33,13 +35,13 @@ public class KeyConverter {
                 .flatMap(applicationQueryService::findApplicationById);
 
         RsaKeyPair key = new RsaKeyPair();
-        key.setId(id);
-        key.setName(name);
+        Optional.ofNullable(id).ifPresent(key::setId);
+        Optional.ofNullable(name).ifPresent(key::setName);
         key.setActive(active);
         key.setSigningKey(signingKey);
         key.setForApplicationSecrets(forApplicationSecrets);
-        key.setCreationTime(creationLocalDateTimeOptional.orElse(null));
-        key.setApplication(applicationOptional.orElse(null));
+        creationLocalDateTimeOptional.ifPresent(key::setCreationTime);
+        applicationOptional.ifPresent(key::setApplication);
         return key;
     }
 }

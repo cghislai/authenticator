@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.admin.web.provider.CrossOriginResourceSh
 import com.charlyghislain.authenticator.admin.web.provider.ThrowableExceptionMapper;
 import com.charlyghislain.authenticator.admin.web.provider.WebApplicationExceptionMapper;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -19,6 +20,7 @@ import java.util.Set;
 @RolesAllowed(AuthenticatorConstants.ROLE_ADMIN)
 public class AuthenticatorAdminWebApplication extends Application {
 
+    @NonNull
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();

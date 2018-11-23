@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
 import com.charlyghislain.authenticator.ejb.util.FilterUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -28,12 +29,14 @@ public class RsaKeyPairQueryService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @NonNull
     public Optional<RsaKeyPair> findRsaKeyPairById(Long id) {
         KeyFilter KeyFilter = new KeyFilter();
         KeyFilter.setId(id);
         return this.findRsaKeyPair(KeyFilter);
     }
 
+    @NonNull
     public Optional<RsaKeyPair> findActiveRsaKeyPairByName(String name) {
         KeyFilter KeyFilter = new KeyFilter();
         KeyFilter.setName(name);
@@ -42,24 +45,28 @@ public class RsaKeyPairQueryService {
         return this.findRsaKeyPair(KeyFilter);
     }
 
+    @NonNull
     public Optional<RsaKeyPair> findRsaKeyPair(KeyFilter keyFilter) {
         CriteriaQuery<RsaKeyPair> searchQuery = DbQueryUtils.createSearchQuery(entityManager, RsaKeyPair.class,
                 keyFilter, this::createPredicates);
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
-    public ResultList<RsaKeyPair> findRsaKeyPairs(KeyFilter keyFilter, Pagination<RsaKeyPair> pagination) {
+    @NonNull
+    public ResultList<RsaKeyPair> findRsaKeyPairs(KeyFilter keyFilter, @NonNull Pagination<RsaKeyPair> pagination) {
         CriteriaQuery<RsaKeyPair> searchQuery = DbQueryUtils.createSearchQuery(entityManager, RsaKeyPair.class,
                 keyFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery, pagination);
     }
 
+    @NonNull
     public ResultList<RsaKeyPair> findAllRsaKeyPairs(KeyFilter KeyFilter) {
         CriteriaQuery<RsaKeyPair> searchQuery = DbQueryUtils.createSearchQuery(entityManager, RsaKeyPair.class,
                 KeyFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
+    @NonNull
     private List<Predicate> createPredicates(From<?, RsaKeyPair> rsaKeyPairFrom, KeyFilter KeyFilter) {
         List<Predicate> predicates = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

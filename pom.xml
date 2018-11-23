@@ -60,6 +60,9 @@
 
     <properties>
         <typescript.api.npm.version>${project.version}</typescript.api.npm.version>
+        <!-- To be set by other plugins -->
+        <!--suppress UnresolvedMavenProperty -->
+        <annotatedJdk>${org.checkerframework:jdk8:jar}</annotatedJdk>
     </properties>
 
     <dependencyManagement>
@@ -124,6 +127,11 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
+                <version>2.5.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>jdk8</artifactId>
                 <version>2.5.2</version>
             </dependency>
             <dependency>
@@ -210,12 +218,14 @@
         </dependencies>
     </dependencyManagement>
 
+
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
                     <configuration>
                         <source>8</source>
                         <target>8</target>
@@ -352,6 +362,81 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- This profile requires compilation using JDK8 -->
+            <id>checker</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.checkerframework</groupId>
+                    <artifactId>jdk8</artifactId>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-jpamodelgen</artifactId>
+                    <version>5.3.1.Final</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>8</source>
+                            <target>8</target>
+                            <compilerArguments>
+                                <Xmaxerrs>10000</Xmaxerrs>
+                                <Xmaxwarns>10000</Xmaxwarns>
+                            </compilerArguments>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.checkerframework</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>2.5.2</version>
+                                </path>
+                                <path>
+                                    <groupId>org.hibernate</groupId>
+                                    <artifactId>hibernate-jpamodelgen</artifactId>
+                                    <version>5.3.1.Final</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <annotationProcessors>
+                                <!-- Seems this one is not registered with this config -->
+                                <annotationProcessor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</annotationProcessor>
+                                <!-- Add all the checkers you want to enable here -->
+                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker
+                                </annotationProcessor>
+
+                            </annotationProcessors>
+                            <compilerArgs>
+                                <!-- location of the annotated JDK, which comes from a Maven dependency -->
+                                <arg>-Xbootclasspath/p:${annotatedJdk}</arg>
+                                <!-- -Awarns turns type-checking warnings into errors (or rather the inverse?). -->
+                                <arg>-Awarns</arg>
+                                <!-- Lots of uninitialized fields: CDI-injection, serialized POJOs,...  -->
+                                <arg>-AsuppressWarnings=uninitialized</arg>
+                            </compilerArgs>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -6,31 +6,38 @@ import com.charlyghislain.authenticator.admin.api.domain.WsUserFilter;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.filter.UserFilter;
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UserFilterConverter {
 
-    public UserFilter translateWsUserFilter(WsUserFilter input) {
-        if (input == null) {
-            return null;
-        }
-        UserFilter result = new UserFilter();
-        result.setId(input.getId());
-        result.setActive(input.getActive());
-        result.setName(input.getName());
-        result.setEmail(input.getEmail());
-        result.setNameContains(input.getNameContains());
-        result.setPasswordExpired(input.getPasswordExpired());
-        result.setAdmin(input.getAdmin());
-        return result;
+    @NonNull
+    public UserFilter translateWsUserFilter(@NonNull WsUserFilter wsUserFilter) {
+        Long id = wsUserFilter.getId();
+        Boolean active = wsUserFilter.getActive();
+        String name = wsUserFilter.getName();
+        String email = wsUserFilter.getEmail();
+        String nameContains = wsUserFilter.getNameContains();
+        Boolean passwordExpired = wsUserFilter.getPasswordExpired();
+        Boolean admin = wsUserFilter.getAdmin();
+
+        UserFilter userFilter = new UserFilter();
+        Optional.ofNullable(id).ifPresent(userFilter::setId);
+        Optional.ofNullable(active).ifPresent(userFilter::setActive);
+        Optional.ofNullable(name).ifPresent(userFilter::setName);
+        Optional.ofNullable(email).ifPresent(userFilter::setEmail);
+        Optional.ofNullable(nameContains).ifPresent(userFilter::setNameContains);
+        Optional.ofNullable(passwordExpired).ifPresent(userFilter::setPasswordExpired);
+        Optional.ofNullable(admin).ifPresent(userFilter::setAdmin);
+        return userFilter;
     }
 
-    public Pagination<User> translateWsPagination(WsPagination input) {
-        if (input == null) {
-            return null;
-        }
+    @NonNull
+    public Pagination<User> translateWsPagination(@NonNull WsPagination input) {
         Pagination<User> result = new Pagination<User>();
         result.setOffset(input.getOffset());
         result.setLength(input.getLength());

@@ -52,12 +52,14 @@ public class HealthService {
         return true;
     }
 
+    @Nullable
     private String unwrapErrorMessage(Throwable e) {
         return Optional.ofNullable(e)
                 .map(Throwable::getMessage)
                 .orElseGet(() -> this.getCauseMessage(e));
     }
 
+    @Nullable
     private String getCauseMessage(Throwable e) {
         return Optional.ofNullable(e)
                 .map(Throwable::getCause)

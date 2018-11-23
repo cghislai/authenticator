@@ -1,5 +1,7 @@
 package com.charlyghislain.authenticator.domain.domain.validation;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.validation.ConstraintValidator;
@@ -11,7 +13,7 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(@Nullable String value, ConstraintValidatorContext context) {
         if (value == null) {
             return false;
         }

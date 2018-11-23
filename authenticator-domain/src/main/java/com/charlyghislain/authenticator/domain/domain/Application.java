@@ -4,6 +4,7 @@ package com.charlyghislain.authenticator.domain.domain;
 import com.charlyghislain.authenticator.domain.domain.util.WithId;
 import com.charlyghislain.authenticator.domain.domain.util.WithName;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifierName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -122,7 +123,7 @@ public class Application implements WithId, WithName {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

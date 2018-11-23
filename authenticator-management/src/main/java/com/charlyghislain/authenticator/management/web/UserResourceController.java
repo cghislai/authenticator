@@ -18,6 +18,7 @@ import com.charlyghislain.authenticator.management.api.error.AuthenticatorManage
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebException;
 import com.charlyghislain.authenticator.management.web.converter.*;
 import com.charlyghislain.authenticator.management.web.provider.CallerManagedApplication;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -50,8 +51,9 @@ public class UserResourceController implements UserResource {
     @CallerManagedApplication
     private Application callerManagedApplication;
 
+    @NonNull
     @Override
-    public WsApplicationUser createUser(WsApplicationUserWithPassword wsApplicationUser) {
+    public WsApplicationUser createUser(@NonNull WsApplicationUserWithPassword wsApplicationUser) {
         User user = userConverter.toUser(wsApplicationUser);
         String password = wsApplicationUser.getPassword();
         boolean passwordValid = userUpdateService.checkPasswordValidity(password);
@@ -68,8 +70,9 @@ public class UserResourceController implements UserResource {
         }
     }
 
+    @NonNull
     @Override
-    public WsResultList<WsApplicationUser> listUsers(WsUserApplicationFilter filter, WsPagination wsPagination) {
+    public WsResultList<WsApplicationUser> listUsers(@NonNull WsUserApplicationFilter filter, @NonNull WsPagination wsPagination) {
         UserApplicationFilter userApplicationFilter = userApplicationFilterConverter.toUserApplicationFilter(filter);
         Pagination<UserApplication> pagination = userApplicationFilterConverter.toPagination(wsPagination);
         userApplicationFilter.setApplication(callerManagedApplication);
@@ -79,22 +82,25 @@ public class UserResourceController implements UserResource {
         return new WsResultList<>(results, userApplicationResultList.getTotalCount());
     }
 
+    @NonNull
     @Override
     public WsApplicationUser getUser(Long userId) {
         UserApplication userApplication = getUserApplication(userId);
         return wsApplicationUserConverter.toWsUserApplication(userApplication);
     }
 
+    @NonNull
     @Override
-    public WsApplicationUser updateUser(Long userId, WsApplicationUser wsApplicationUser) {
+    public WsApplicationUser updateUser(Long userId, @NonNull WsApplicationUser wsApplicationUser) {
         UserApplication userApplication = getUserApplication(userId);
         User user = userConverter.toUser(wsApplicationUser);
         UserApplication updatedUserApplication = userUpdateService.updateApplicationUser(userApplication, user);
         return wsApplicationUserConverter.toWsUserApplication(updatedUserApplication);
     }
 
+    @NonNull
     @Override
-    public WsApplicationUser updateUserPassword(Long userId, String password) {
+    public WsApplicationUser updateUserPassword(Long userId, @NonNull String password) {
         UserApplication userApplication = getUserApplication(userId);
         try {
             UserApplication updatedUserApplication = userUpdateService.updateApplicationUserPassword(userApplication, password);
@@ -104,6 +110,7 @@ public class UserResourceController implements UserResource {
         }
     }
 
+    @NonNull
     @Override
     public WsPasswordResetToken createNewPasswordResetToken(Long userId) {
         UserApplication userApplication = getUserApplication(userId);
@@ -114,7 +121,7 @@ public class UserResourceController implements UserResource {
     }
 
     @Override
-    public void resetUserPassword(Long userId, WsPasswordReset wsPasswordReset) {
+    public void resetUserPassword(Long userId, @NonNull WsPasswordReset wsPasswordReset) {
         UserApplication userApplication = getUserApplication(userId);
         User user = userApplication.getUser();
         String resetToken = wsPasswordReset.getResetToken();
@@ -133,6 +140,7 @@ public class UserResourceController implements UserResource {
         userUpdateService.forgetApplicationUser(userApplication);
     }
 
+    @NonNull
     @Override
     public WsEmailVerificationToken getEmailVerificationToken(Long userId) {
         UserApplication userApplication = getUserApplication(userId);

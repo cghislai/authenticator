@@ -39,6 +39,7 @@ public class WsUserApplicationFilter {
     @QueryParam("userNameContains")
     private String userNameContains;
 
+    @Nullable
     public Long getUserId() {
         return userId;
     }
@@ -47,6 +48,7 @@ public class WsUserApplicationFilter {
         this.userId = userId;
     }
 
+    @Nullable
     public Long getApplicationId() {
         return applicationId;
     }
@@ -55,6 +57,7 @@ public class WsUserApplicationFilter {
         this.applicationId = applicationId;
     }
 
+    @Nullable
     public String getUserName() {
         return userName;
     }
@@ -63,6 +66,7 @@ public class WsUserApplicationFilter {
         this.userName = userName;
     }
 
+    @Nullable
     public String getUserEmail() {
         return userEmail;
     }
@@ -71,6 +75,7 @@ public class WsUserApplicationFilter {
         this.userEmail = userEmail;
     }
 
+    @Nullable
     public String getUserNameContains() {
         return userNameContains;
     }
@@ -79,6 +84,7 @@ public class WsUserApplicationFilter {
         this.userNameContains = userNameContains;
     }
 
+    @Nullable
     public String getApplicationName() {
         return applicationName;
     }
@@ -87,6 +93,7 @@ public class WsUserApplicationFilter {
         this.applicationName = applicationName;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }

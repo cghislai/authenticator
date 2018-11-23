@@ -4,13 +4,15 @@ package com.charlyghislain.authenticator.management.web.converter;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.management.api.domain.WsApplicationUser;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class WsApplicationUserConverter {
 
-    public WsApplicationUser toWsUserApplication(UserApplication userApplication) {
+    @NonNull
+    public WsApplicationUser toWsUserApplication(@NonNull UserApplication userApplication) {
         User user = userApplication.getUser();
         boolean active = userApplication.isActive();
 

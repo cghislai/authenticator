@@ -10,6 +10,7 @@ import com.charlyghislain.authenticator.domain.domain.filter.EmailVerificationTo
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -33,6 +34,7 @@ public class EmailVerificationQueryService {
     private EntityManager entityManager;
 
 
+    @NonNull
     public Optional<EmailVerificationToken> findActiveEmailVerificationTokenForUserApplication(UserApplication userApplication) {
         EmailVerificationTokenFilter EmailVerificationTokenFilter = new EmailVerificationTokenFilter();
         EmailVerificationTokenFilter.setActive(true);
@@ -40,6 +42,7 @@ public class EmailVerificationQueryService {
         return this.findEmailVerificationToken(EmailVerificationTokenFilter);
     }
 
+    @NonNull
     public Optional<EmailVerificationToken> findActiveEmailVerificationTokenForUserApplication(UserApplication userApplication, String token) {
         EmailVerificationTokenFilter EmailVerificationTokenFilter = new EmailVerificationTokenFilter();
         EmailVerificationTokenFilter.setActive(true);
@@ -54,17 +57,20 @@ public class EmailVerificationQueryService {
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
-    public ResultList<EmailVerificationToken> findEmailVerificationTokens(EmailVerificationTokenFilter EmailVerificationTokenFilter, Pagination<EmailVerificationToken> Pagination) {
+    @NonNull
+    public ResultList<EmailVerificationToken> findEmailVerificationTokens(EmailVerificationTokenFilter EmailVerificationTokenFilter, @NonNull Pagination<EmailVerificationToken> Pagination) {
         CriteriaQuery<EmailVerificationToken> searchQuery = DbQueryUtils.createSearchQuery(entityManager, EmailVerificationToken.class, EmailVerificationTokenFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery, Pagination);
     }
 
+    @NonNull
     public ResultList<EmailVerificationToken> findAllEmailVerificationTokens(EmailVerificationTokenFilter EmailVerificationTokenFilter) {
         CriteriaQuery<EmailVerificationToken> searchQuery = DbQueryUtils.createSearchQuery(entityManager, EmailVerificationToken.class, EmailVerificationTokenFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
 
+    @NonNull
     private List<Predicate> createPredicates(From<?, EmailVerificationToken> emailVerificationTokenFrom, EmailVerificationTokenFilter emailVerificationTokenFilter) {
         List<Predicate> predicates = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

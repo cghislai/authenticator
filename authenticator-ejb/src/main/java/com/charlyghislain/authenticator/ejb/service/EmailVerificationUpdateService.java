@@ -10,6 +10,7 @@ import com.charlyghislain.authenticator.domain.domain.filter.EmailVerificationTo
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.annotation.security.RolesAllowed;
@@ -52,7 +53,7 @@ public class EmailVerificationUpdateService {
 
 
     @RolesAllowed(AuthenticatorConstants.ROLE_APPLICATION)
-    public void validateUserEmail(UserApplication userApplication, String token) throws UnauthorizedOperationException {
+    public void validateUserEmail(@NonNull UserApplication userApplication, String token) throws UnauthorizedOperationException {
         Application application = userApplication.getApplication();
         checkApplicationCanVerifyUserEmail(application);
         emailVerificationQueryService.findActiveEmailVerificationTokenForUserApplication(userApplication, token)

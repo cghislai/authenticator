@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.domain.domain.validation;
 
 import com.charlyghislain.authenticator.domain.domain.util.CharacterSequences;
 import com.charlyghislain.authenticator.domain.domain.util.CharacterValidationUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -14,7 +15,7 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
         return isPasswordValid(value);
     }
 
-    public static boolean isPasswordValid(String value) {
+    public static boolean isPasswordValid(@Nullable String value) {
         if (value == null || value.length() < 8) {
             return false;
         }

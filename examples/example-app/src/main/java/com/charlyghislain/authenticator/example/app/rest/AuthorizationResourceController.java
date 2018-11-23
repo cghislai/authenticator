@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.application.api.domain.WsApplicationRole
 import com.charlyghislain.authenticator.application.api.domain.WsHealthCheckStatus;
 import com.charlyghislain.authenticator.application.api.domain.WsHealthStatus;
 import com.charlyghislain.authenticator.example.app.ApplicationRoles;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class AuthorizationResourceController implements AuthorizationResource {
 
+    @NonNull
     @Override
     @RolesAllowed(ApplicationRoles.AUTHENTICATOR_APP_ROLE)
     public List<WsApplicationRole> listUserRoles(long userId) {
@@ -20,6 +22,7 @@ public class AuthorizationResourceController implements AuthorizationResource {
         return Collections.singletonList(role);
     }
 
+    @NonNull
     @Override
     @RolesAllowed(ApplicationRoles.AUTHENTICATOR_APP_ROLE)
     public WsHealthCheckStatus checkAuthenticatorAuthorization() {

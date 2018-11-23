@@ -1,5 +1,7 @@
 package com.charlyghislain.authenticator.admin.web.provider;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
@@ -11,7 +13,7 @@ public class CorsUtils {
 
     public static final String CORS_ALLOWED_ORIGINS_WILDCARD = "*";
 
-    public static boolean isOriginValid(String origin, List<String> allowedOrigins) {
+    public static boolean isOriginValid(String origin, @Nullable List<String> allowedOrigins) {
         if (allowedOrigins == null || allowedOrigins.isEmpty()) {
             return false;
         }
@@ -41,7 +43,7 @@ public class CorsUtils {
         }
     }
 
-    private static boolean isOriginAllowed(String origin, String allowedOrigin) {
+    private static boolean isOriginAllowed(@Nullable String origin, @Nullable String allowedOrigin) {
         if (allowedOrigin == null || origin == null) {
             return false;
         }

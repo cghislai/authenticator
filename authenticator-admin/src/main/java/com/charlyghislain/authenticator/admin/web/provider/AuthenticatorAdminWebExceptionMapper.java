@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.admin.web.provider;
 
 import com.charlyghislain.authenticator.admin.api.domain.WsError;
 import com.charlyghislain.authenticator.admin.api.error.AuthenticatorAdminWebException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ public class AuthenticatorAdminWebExceptionMapper implements ExceptionMapper<Aut
 
 
     @Override
-    public Response toResponse(AuthenticatorAdminWebException exception) {
+    public Response toResponse(@NonNull AuthenticatorAdminWebException exception) {
         String code = exception.getCode();
         int status = exception.getStatus();
         String description = exception.getDescription();

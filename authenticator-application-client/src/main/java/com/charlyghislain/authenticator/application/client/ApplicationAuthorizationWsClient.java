@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationRole;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -29,7 +30,7 @@ public class ApplicationAuthorizationWsClient implements ApplicationAuthorizatio
     }
 
     @Override
-    public List<ApplicationRole> findUserApplicationRoles(String authToken, UserApplication userApplication) {
+    public List<ApplicationRole> findUserApplicationRoles(String authToken, @NonNull UserApplication userApplication) {
         Application application = userApplication.getApplication();
         User user = userApplication.getUser();
         Long userId = user.getId();

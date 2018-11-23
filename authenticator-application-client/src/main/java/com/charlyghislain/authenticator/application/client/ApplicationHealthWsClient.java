@@ -12,6 +12,7 @@ import com.charlyghislain.authenticator.domain.client.ApplicationHealthClient;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationAuthenticatorAuthorizationHealth;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationHealth;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -31,8 +32,9 @@ public class ApplicationHealthWsClient implements ApplicationHealthClient {
     public void init() {
     }
 
+    @NonNull
     @Override
-    public ApplicationAuthenticatorAuthorizationHealth checkAuthenticatorAuthorizationHealth(Application application, String authToken) {
+    public ApplicationAuthenticatorAuthorizationHealth checkAuthenticatorAuthorizationHealth(@NonNull Application application, String authToken) {
         try {
             AuthorizationResource authorizationResource = restClientProvider.createResource(authToken, application, AuthorizationResource.class);
             WsHealthCheckStatus authenticationCheckStatus = authorizationResource.checkAuthenticatorAuthorization();
@@ -44,8 +46,9 @@ public class ApplicationHealthWsClient implements ApplicationHealthClient {
         }
     }
 
+    @NonNull
     @Override
-    public ApplicationHealth checkApplicationHealth(Application application, String authToken) {
+    public ApplicationHealth checkApplicationHealth(@NonNull Application application, String authToken) {
         try {
             HealthResource healthResource = restClientProvider.createResource(authToken, application, HealthResource.class);
             WsHealthCheckResponse authenticationCheckStatus = healthResource.getHealth();

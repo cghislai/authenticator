@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.admin.web.converter;
 
 import com.charlyghislain.authenticator.admin.api.domain.WsApplication;
 import com.charlyghislain.authenticator.domain.domain.Application;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
@@ -12,7 +13,8 @@ import java.time.ZonedDateTime;
 @ApplicationScoped
 public class WsApplicationConverter {
 
-    public WsApplication toWsapplication(Application application) {
+    @NonNull
+    public WsApplication toWsapplication(@NonNull Application application) {
         Long id = application.getId();
         String name = application.getName();
         boolean active = application.isActive();

@@ -58,6 +58,7 @@ public class WsPagination {
         this.wsSorts = wsSorts;
     }
 
+    @Nullable
     public List<WsSort> getWsSorts() {
         return wsSorts;
     }

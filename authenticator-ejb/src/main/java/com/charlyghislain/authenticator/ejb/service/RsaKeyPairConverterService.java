@@ -4,6 +4,7 @@ package com.charlyghislain.authenticator.ejb.service;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.ejb.Stateless;
@@ -35,6 +36,7 @@ public class RsaKeyPairConverterService {
     @ConfigProperty(name = ConfigConstants.UNSAFE_FEATURES_ENABLED, defaultValue = "false")
     private boolean unsafeFeaturesEnabled;
 
+    @NonNull
     public RsaKeyPair generateNewKeyPair() {
         try {
             SecureRandom secureRandom = SecureRandom.getInstanceStrong();
@@ -44,6 +46,7 @@ public class RsaKeyPairConverterService {
         }
     }
 
+    @NonNull
     @Deprecated
     public RsaKeyPair generateNewKeyPair(byte[] seed) {
         if (!unsafeFeaturesEnabled) {
@@ -59,7 +62,8 @@ public class RsaKeyPairConverterService {
     }
 
 
-    public RSAPublicKey loadPublicKey(RsaKeyPair rsaKeyPair) {
+    @NonNull
+    public RSAPublicKey loadPublicKey(@NonNull RsaKeyPair rsaKeyPair) {
         byte[] modulusBytes = rsaKeyPair.getModulus();
         byte[] publicExponentBytes = rsaKeyPair.getPublicExponent();
 
@@ -76,7 +80,8 @@ public class RsaKeyPairConverterService {
         }
     }
 
-    public String encodePublicKeyToPem(RsaKeyPair keyPair) {
+    @NonNull
+    public String encodePublicKeyToPem(@NonNull RsaKeyPair keyPair) {
         RSAPublicKey rsaPublicKey = loadPublicKey(keyPair);
 
         Base64.Encoder base64Encoder = Base64.getEncoder();
@@ -94,7 +99,8 @@ public class RsaKeyPairConverterService {
                 "-----END RSA PUBLIC KEY-----\n";
     }
 
-    public RSAPrivateKey loadPrivateKey(RsaKeyPair rsaKeyPair) {
+    @NonNull
+    public RSAPrivateKey loadPrivateKey(@NonNull RsaKeyPair rsaKeyPair) {
         byte[] modulusBytes = rsaKeyPair.getModulus();
         byte[] privateExponentBytes = rsaKeyPair.getPrivateExponent();
 
@@ -111,6 +117,7 @@ public class RsaKeyPairConverterService {
         }
     }
 
+    @NonNull
     private RsaKeyPair generateKeyPair(SecureRandom secureRandom) {
         KeyPairGenerator keyPairGenerator = this.getKeyPairGenerator();
         keyPairGenerator.initialize(RSA_KEY_SIZE, secureRandom);

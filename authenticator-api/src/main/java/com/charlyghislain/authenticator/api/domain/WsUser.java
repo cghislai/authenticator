@@ -20,6 +20,7 @@ public class WsUser implements Serializable {
     private boolean emailVerified;
     private boolean passwordExpired;
 
+    @Nullable
     public Long getId() {
         return id;
     }

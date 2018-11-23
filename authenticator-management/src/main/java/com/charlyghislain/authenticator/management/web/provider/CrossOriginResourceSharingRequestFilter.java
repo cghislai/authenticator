@@ -1,6 +1,7 @@
 package com.charlyghislain.authenticator.management.web.provider;
 
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.annotation.Priority;
@@ -28,7 +29,7 @@ public class CrossOriginResourceSharingRequestFilter implements ContainerRequest
     private List<String> corsAllowedOrigins;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(@NonNull ContainerRequestContext requestContext) throws IOException {
         CorsUtils.filterCorsOptionsRequest(requestContext, corsAllowedOrigins);
     }
 }

@@ -14,6 +14,7 @@ import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
 import com.charlyghislain.authenticator.ejb.util.FilterUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,62 +36,73 @@ public class UserQueryService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @NonNull
     public Optional<User> findUserByName(String name) {
         UserFilter UserFilter = new UserFilter();
         UserFilter.setName(name);
         return this.findUser(UserFilter);
     }
 
+    @NonNull
     public Optional<User> findUserById(Long id) {
         UserFilter UserFilter = new UserFilter();
         UserFilter.setId(id);
         return this.findUser(UserFilter);
     }
 
+    @NonNull
     public Optional<User> findUser(UserFilter UserFilter) {
         CriteriaQuery<User> searchQuery = DbQueryUtils.createSearchQuery(entityManager, User.class, UserFilter, this::createPredicates);
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
+    @NonNull
     public ResultList<User> findAllUsers(UserFilter UserFilter) {
         CriteriaQuery<User> searchQuery = DbQueryUtils.createSearchQuery(entityManager, User.class, UserFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
-    public ResultList<User> findUsers(UserFilter UserFilter, Pagination<User> Pagination) {
+    @NonNull
+    public ResultList<User> findUsers(UserFilter UserFilter, @NonNull Pagination<User> Pagination) {
         CriteriaQuery<User> searchQuery = DbQueryUtils.createSearchQuery(entityManager, User.class, UserFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery, Pagination);
     }
 
-    public Optional<UserApplication> findActiveUserApplication(User user, Application application) {
+    @NonNull
+    public Optional<UserApplication> findActiveUserApplication(@NonNull User user, @NonNull Application application) {
         UserApplicationFilter userApplicationFilter = createUserApplicationFilter(user, application);
         userApplicationFilter.setActive(true);
         return this.findUserApplication(userApplicationFilter);
     }
 
-    public Optional<UserApplication> findUserApplication(User user, Application application) {
+    @NonNull
+    public Optional<UserApplication> findUserApplication(@NonNull User user, @NonNull Application application) {
         UserApplicationFilter userApplicationFilter = createUserApplicationFilter(user, application);
         return this.findUserApplication(userApplicationFilter);
     }
 
+    @NonNull
     public Optional<UserApplication> findUserApplication(UserApplicationFilter userApplicationFilter) {
         CriteriaQuery<UserApplication> searchQuery = DbQueryUtils.createSearchQuery(entityManager, UserApplication.class, userApplicationFilter,
                 this::createUserApplicationPredicates);
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
-    public ResultList<UserApplication> findUserApplications(UserApplicationFilter userApplicationFilter, Pagination<UserApplication> pagination) {
+    @NonNull
+    public ResultList<UserApplication> findUserApplications(UserApplicationFilter userApplicationFilter, @NonNull Pagination<UserApplication> pagination) {
         CriteriaQuery<UserApplication> searchQuery = DbQueryUtils.createSearchQuery(entityManager, UserApplication.class, userApplicationFilter,
                 this::createUserApplicationPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery, pagination);
     }
 
+    @NonNull
     public ResultList<UserApplication> findAllUserApplications(UserApplicationFilter userApplicationFilter) {
         CriteriaQuery<UserApplication> searchQuery = DbQueryUtils.createSearchQuery(entityManager, UserApplication.class, userApplicationFilter,
                 this::createUserApplicationPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
+    @NonNull
     private List<Predicate> createUserApplicationPredicates(From<?, UserApplication> root, UserApplicationFilter filter) {
         List<Predicate> predicates = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -144,6 +156,7 @@ public class UserQueryService {
         return predicates;
     }
 
+    @NonNull
     private List<Predicate> createPredicates(From<?, User> userFrom, UserFilter UserFilter) {
         List<Predicate> predicates = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -194,6 +207,7 @@ public class UserQueryService {
         return criteriaBuilder.or(nameMatchPredicate, emailMatchPredicate);
     }
 
+    @NonNull
     @NotNull
     private UserApplicationFilter createUserApplicationFilter(User user, Application application) {
         UserApplicationFilter userApplicationFilter = new UserApplicationFilter();

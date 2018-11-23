@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.web.provider;
 
 import com.charlyghislain.authenticator.api.domain.WsAuthenticatorInfo;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,6 +26,7 @@ public class WsAuthenticatorInfoProvider {
     private String authenticatorUrl;
 
 
+    @NonNull
     public WsAuthenticatorInfo getAuthenticatorInfo() {
         WsAuthenticatorInfo wsAuthenticatorInfo = new WsAuthenticatorInfo();
         wsAuthenticatorInfo.setEndpointUrl(authenticatorUrl);

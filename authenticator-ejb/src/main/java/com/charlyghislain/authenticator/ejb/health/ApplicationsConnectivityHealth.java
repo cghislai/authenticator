@@ -7,6 +7,7 @@ import com.charlyghislain.authenticator.domain.domain.filter.ApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationAuthenticatorAuthorizationHealth;
 import com.charlyghislain.authenticator.ejb.service.ApplicationQueryService;
 import com.charlyghislain.authenticator.ejb.service.JwtTokenService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -51,7 +52,7 @@ public class ApplicationsConnectivityHealth implements HealthCheck {
         return responseBuilder.build();
     }
 
-    private void appendApplicationData(HealthCheckResponseBuilder responseBuilder, ApplicationAuthenticatorAuthorizationHealth applicationHealth) {
+    private void appendApplicationData(@NonNull HealthCheckResponseBuilder responseBuilder, ApplicationAuthenticatorAuthorizationHealth applicationHealth) {
         String applicationName = applicationHealth.getApplicationName();
         String data;
 

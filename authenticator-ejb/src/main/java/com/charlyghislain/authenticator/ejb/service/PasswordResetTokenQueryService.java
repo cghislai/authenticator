@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.domain.domain.filter.PasswordResetTokenF
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,6 +31,7 @@ public class PasswordResetTokenQueryService {
     private EntityManager entityManager;
 
 
+    @NonNull
     public Optional<PasswordResetToken> findActivePasswordResetTokenForUser(User user) {
         PasswordResetTokenFilter PasswordResetTokenFilter = new PasswordResetTokenFilter();
         PasswordResetTokenFilter.setActive(true);
@@ -37,6 +39,7 @@ public class PasswordResetTokenQueryService {
         return this.findPasswordResetToken(PasswordResetTokenFilter);
     }
 
+    @NonNull
     public Optional<PasswordResetToken> findActivePasswordResetTokenForUser(User user, String token) {
         PasswordResetTokenFilter PasswordResetTokenFilter = new PasswordResetTokenFilter();
         PasswordResetTokenFilter.setActive(true);
@@ -51,17 +54,20 @@ public class PasswordResetTokenQueryService {
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
-    public ResultList<PasswordResetToken> findPasswordResetTokens(PasswordResetTokenFilter PasswordResetTokenFilter, Pagination<PasswordResetToken> Pagination) {
+    @NonNull
+    public ResultList<PasswordResetToken> findPasswordResetTokens(PasswordResetTokenFilter PasswordResetTokenFilter, @NonNull Pagination<PasswordResetToken> Pagination) {
         CriteriaQuery<PasswordResetToken> searchQuery = DbQueryUtils.createSearchQuery(entityManager, PasswordResetToken.class, PasswordResetTokenFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery, Pagination);
     }
 
+    @NonNull
     public ResultList<PasswordResetToken> findAllPasswordResetTokens(PasswordResetTokenFilter PasswordResetTokenFilter) {
         CriteriaQuery<PasswordResetToken> searchQuery = DbQueryUtils.createSearchQuery(entityManager, PasswordResetToken.class, PasswordResetTokenFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
 
+    @NonNull
     private List<Predicate> createPredicates(From<?, PasswordResetToken> passwordResetTokenFrom, PasswordResetTokenFilter passwordResetTokenFilter) {
         List<Predicate> predicates = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

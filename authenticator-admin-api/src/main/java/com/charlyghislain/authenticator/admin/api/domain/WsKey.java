@@ -22,6 +22,7 @@ public class WsKey {
     @NullableField
     private Long applicationId;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -54,6 +55,7 @@ public class WsKey {
         this.forApplicationSecrets = forApplicationSecrets;
     }
 
+    @Nullable
     public Long getApplicationId() {
         return applicationId;
     }
@@ -62,6 +64,7 @@ public class WsKey {
         this.applicationId = applicationId;
     }
 
+    @Nullable
     public ZonedDateTime getCreationDateTime() {
         return creationDateTime;
     }

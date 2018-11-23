@@ -17,6 +17,7 @@ public class EmailVerificationTokenFilter {
     @Nullable
     private User user;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -25,6 +26,7 @@ public class EmailVerificationTokenFilter {
         this.id = id;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -33,6 +35,7 @@ public class EmailVerificationTokenFilter {
         this.active = active;
     }
 
+    @Nullable
     public String getToken() {
         return token;
     }
@@ -41,6 +44,7 @@ public class EmailVerificationTokenFilter {
         this.token = token;
     }
 
+    @Nullable
     public UserApplication getUserApplication() {
         return userApplication;
     }
@@ -49,6 +53,7 @@ public class EmailVerificationTokenFilter {
         this.userApplication = userApplication;
     }
 
+    @Nullable
     public User getUser() {
         return user;
     }

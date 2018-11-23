@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.application.client.provider.RestClientPr
 import com.charlyghislain.authenticator.domain.client.ApplicationUserEventsClient;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -25,7 +26,7 @@ public class ApplicationUserEventsWsClient implements ApplicationUserEventsClien
     public void init() {
     }
 
-    public void notifyUserAdded(String authToken, UserApplication userApplication) {
+    public void notifyUserAdded(String authToken, @NonNull UserApplication userApplication) {
         WsApplicationUser wsApplicationUser = wsApplicationUserConverter.toWsApplicationUser(userApplication);
 
         Application application = userApplication.getApplication();
@@ -34,7 +35,7 @@ public class ApplicationUserEventsWsClient implements ApplicationUserEventsClien
     }
 
     @Override
-    public void notifyEmailVerified(String authToken, UserApplication userApplication) {
+    public void notifyEmailVerified(String authToken, @NonNull UserApplication userApplication) {
         WsApplicationUser wsApplicationUser = wsApplicationUserConverter.toWsApplicationUser(userApplication);
 
         Application application = userApplication.getApplication();
@@ -42,7 +43,7 @@ public class ApplicationUserEventsWsClient implements ApplicationUserEventsClien
         eventResource.userEmailVerified(wsApplicationUser);
     }
 
-    public void notifyUserRemoved(String authToken, Application application, Long userId) {
+    public void notifyUserRemoved(String authToken, @NonNull Application application, Long userId) {
         UserEventResource eventResource = restClientProvider.createResource(authToken, application, UserEventResource.class);
         eventResource.userRemoved(userId);
     }

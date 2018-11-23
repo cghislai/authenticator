@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.management.api.domain.WsHealthCheckStatu
 import com.charlyghislain.authenticator.management.web.converter.WsApplicationInfoConverter;
 import com.charlyghislain.authenticator.management.web.converter.WsHealthCheckStatusConverter;
 import com.charlyghislain.authenticator.management.web.provider.CallerManagedApplication;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 
 import javax.annotation.security.PermitAll;
@@ -27,6 +28,7 @@ public class ConnectivityResourceController implements ConnectivityResource {
     @CallerManagedApplication
     private Application callerManagedApplication;
 
+    @NonNull
     @Override
     @PermitAll
     public WsHealthCheckStatus authenticationHealthCheck() {
@@ -34,6 +36,7 @@ public class ConnectivityResourceController implements ConnectivityResource {
         return wsHealthCheckStatusConverter.toWsHealthCheckStatus(healthCheckResponse);
     }
 
+    @NonNull
     @Override
     @RolesAllowed(AuthenticatorConstants.ROLE_APP_MANAGEMENT)
     public WsApplicationInfo getMyInfo() {

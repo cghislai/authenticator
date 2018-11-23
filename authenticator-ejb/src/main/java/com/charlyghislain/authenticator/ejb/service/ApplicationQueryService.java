@@ -11,6 +11,7 @@ import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
 import com.charlyghislain.authenticator.ejb.util.FilterUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ public class ApplicationQueryService {
     private JwtTokenService tokenService;
 
 
+    @NonNull
     public Optional<Application> findActiveApplicationByName(String name) {
         ApplicationFilter ApplicationFilter = new ApplicationFilter();
         ApplicationFilter.setActive(true);
@@ -44,18 +46,21 @@ public class ApplicationQueryService {
         return this.findApplication(ApplicationFilter);
     }
 
+    @NonNull
     public Optional<Application> findActiveApplicationByHost(String host) {
         ApplicationFilter ApplicationFilter = new ApplicationFilter();
         ApplicationFilter.setActive(true);
         ApplicationFilter.setApplicationUrl(host);
         return this.findApplication(ApplicationFilter);
     }
+    @NonNull
     public Optional<Application> findApplicationById(Long id) {
         ApplicationFilter ApplicationFilter = new ApplicationFilter();
         ApplicationFilter.setId(id);
         return this.findApplication(ApplicationFilter);
     }
 
+    @NonNull
     public Optional<Application> findActiveApplicationById(Long id) {
         ApplicationFilter ApplicationFilter = new ApplicationFilter();
         ApplicationFilter.setId(id);
@@ -68,27 +73,30 @@ public class ApplicationQueryService {
         return DbQueryUtils.toSingleResult(entityManager, searchQuery);
     }
 
-    public ResultList<Application> findApplications(ApplicationFilter ApplicationFilter, Pagination<Application> Pagination) {
+    @NonNull
+    public ResultList<Application> findApplications(ApplicationFilter ApplicationFilter, @NonNull Pagination<Application> Pagination) {
         CriteriaQuery<Application> searchQuery = DbQueryUtils.createSearchQuery(entityManager, Application.class, ApplicationFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery, Pagination);
     }
 
 
+    @NonNull
     public ResultList<Application> findAllApplications(ApplicationFilter ApplicationFilter) {
         CriteriaQuery<Application> searchQuery = DbQueryUtils.createSearchQuery(entityManager, Application.class, ApplicationFilter, this::createPredicates);
         return DbQueryUtils.toResultList(entityManager, searchQuery);
     }
 
-    public ApplicationAuthenticatorAuthorizationHealth checkProviderAuthorizationHealth(Application application) {
+    public ApplicationAuthenticatorAuthorizationHealth checkProviderAuthorizationHealth(@NonNull Application application) {
         String token = tokenService.generateAuthenticatorTokenForApplication(application);
         return applicationHealthClient.checkAuthenticatorAuthorizationHealth(application, token);
     }
 
-    public ApplicationHealth checkApplicationHealth(Application application) {
+    public ApplicationHealth checkApplicationHealth(@NonNull Application application) {
         String token = tokenService.generateAuthenticatorTokenForApplication(application);
         return applicationHealthClient.checkApplicationHealth(application, token);
     }
 
+    @NonNull
     private List<Predicate> createPredicates(From<?, Application> applicationFrom, ApplicationFilter ApplicationFilter) {
         List<Predicate> predicates = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

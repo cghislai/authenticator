@@ -1,5 +1,7 @@
 package com.charlyghislain.authenticator.example.app.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
@@ -14,7 +16,7 @@ public class JwtTokenProvider implements ClientRequestFilter {
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
+    public void filter(@NonNull ClientRequestContext requestContext) throws IOException {
         MultivaluedMap<String, Object> headers = requestContext.getHeaders();
         headers.add("Authorization", "Bearer " + token);
     }

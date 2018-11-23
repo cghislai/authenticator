@@ -30,6 +30,7 @@ public class WsApplication implements Serializable {
     @NotNull
     private Boolean existingUsersAreAddedOnTokenRequest;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -66,6 +67,7 @@ public class WsApplication implements Serializable {
         return active;
     }
 
+    @Nullable
     public ZonedDateTime getCreationDateTime() {
         return creationDateTime;
     }

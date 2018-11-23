@@ -1,5 +1,7 @@
 package com.charlyghislain.authenticator.domain.domain.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ public class ResultList<T extends Object> {
         this.totalCount = totalCount;
     }
 
+    @NonNull
     public <U> ResultList<U> map(Function<T, U> mapper) {
         List<U> mappedResults = this.results.stream().map(mapper)
                 .collect(Collectors.toList());
@@ -48,6 +51,7 @@ public class ResultList<T extends Object> {
         results.forEach(consumer);
     }
 
+    @NonNull
     public Optional<T> getAnyResult() {
         return results.stream().findAny();
     }

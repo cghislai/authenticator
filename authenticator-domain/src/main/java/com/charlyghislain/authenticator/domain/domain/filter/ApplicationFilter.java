@@ -15,6 +15,7 @@ public class ApplicationFilter {
     @Nullable
     private String applicationUrl;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -23,6 +24,7 @@ public class ApplicationFilter {
         this.id = id;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -31,6 +33,7 @@ public class ApplicationFilter {
         this.active = active;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
@@ -39,6 +42,7 @@ public class ApplicationFilter {
         this.name = name;
     }
 
+    @Nullable
     public String getNameContains() {
         return nameContains;
     }
@@ -47,6 +51,7 @@ public class ApplicationFilter {
         this.nameContains = nameContains;
     }
 
+    @Nullable
     public String getApplicationUrl() {
         return applicationUrl;
     }

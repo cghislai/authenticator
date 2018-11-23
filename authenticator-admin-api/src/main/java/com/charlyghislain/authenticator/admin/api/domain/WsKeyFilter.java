@@ -35,6 +35,7 @@ public class WsKeyFilter {
     @QueryParam("nameContains")
     private String nameContains;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -43,6 +44,7 @@ public class WsKeyFilter {
         this.id = id;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -51,6 +53,7 @@ public class WsKeyFilter {
         this.active = active;
     }
 
+    @Nullable
     public Boolean getForApplicationSecrets() {
         return forApplicationSecrets;
     }
@@ -59,6 +62,7 @@ public class WsKeyFilter {
         this.forApplicationSecrets = forApplicationSecrets;
     }
 
+    @Nullable
     public Boolean getForApplication() {
         return forApplication;
     }
@@ -67,6 +71,7 @@ public class WsKeyFilter {
         this.forApplication = forApplication;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
@@ -75,6 +80,7 @@ public class WsKeyFilter {
         this.name = name;
     }
 
+    @Nullable
     public String getNameContains() {
         return nameContains;
     }
@@ -83,6 +89,7 @@ public class WsKeyFilter {
         this.nameContains = nameContains;
     }
 
+    @Nullable
     public Long getApplicationId() {
         return applicationId;
     }

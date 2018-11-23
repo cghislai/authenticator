@@ -24,6 +24,7 @@ import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.service.ApplicationQueryService;
 import com.charlyghislain.authenticator.ejb.service.ApplicationUpdateService;
 import com.charlyghislain.authenticator.ejb.service.JwtTokenService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -48,8 +49,9 @@ public class AdminApplicationResourceController implements AdminApplicationResou
     @Inject
     private ApplicationConverter applicationConverter;
 
+    @NonNull
     @Override
-    public WsResultList<WsApplication> listApplications(WsApplicationFilter wsApplicationFilter, WsPagination wsPagination) {
+    public WsResultList<WsApplication> listApplications(@NonNull WsApplicationFilter wsApplicationFilter, @NonNull WsPagination wsPagination) {
         ApplicationFilter applicationFilter = applicationFilterConverter.toApplicationFilter(wsApplicationFilter);
         Pagination<Application> applicationPagination = applicationFilterConverter.toPagination(wsPagination);
 
@@ -66,8 +68,9 @@ public class AdminApplicationResourceController implements AdminApplicationResou
                 .orElseThrow(this::newNotFoundException);
     }
 
+    @NonNull
     @Override
-    public WsApplication updateApplication(Long applicationId, WsApplication wsApplication) {
+    public WsApplication updateApplication(Long applicationId, @NonNull WsApplication wsApplication) {
         Application application = applicationConverter.toWsApplication(wsApplication);
         Application existingApplication = applicationQueryService.findApplicationById(applicationId)
                 .orElseThrow(this::newNotFoundException);
@@ -79,8 +82,9 @@ public class AdminApplicationResourceController implements AdminApplicationResou
         }
     }
 
+    @NonNull
     @Override
-    public WsApplication createApplication(WsApplication wsApplication) {
+    public WsApplication createApplication(@NonNull WsApplication wsApplication) {
         Application application = applicationConverter.toWsApplication(wsApplication);
         try {
             Application updatedApplication = applicationUpdateService.createApplication(application);
@@ -101,6 +105,7 @@ public class AdminApplicationResourceController implements AdminApplicationResou
         }
     }
 
+    @NonNull
     @Override
     public WsApplicationHealth getApplicationHealth(Long applicationId) {
         Application application = applicationQueryService.findApplicationById(applicationId)

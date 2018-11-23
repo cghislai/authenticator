@@ -1,6 +1,7 @@
 package com.charlyghislain.authenticator.example.app.client;
 
 import com.charlyghislain.authenticator.example.app.rest.ServerEventListeners;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.glassfish.jersey.media.sse.OutboundEvent;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -22,7 +23,7 @@ public class ErrorResponseFilter implements ClientResponseFilter {
 
 
     @Override
-    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
+    public void filter(@NonNull ClientRequestContext requestContext, @NonNull ClientResponseContext responseContext) throws IOException {
         int status = responseContext.getStatus();
         if (status >= 400) {
             URI uri = requestContext.getUri();

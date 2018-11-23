@@ -23,6 +23,7 @@ public class WsUser implements Serializable {
     @NullableField
     private ZonedDateTime creationDateTime;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -79,6 +80,7 @@ public class WsUser implements Serializable {
         this.admin = admin;
     }
 
+    @Nullable
     public ZonedDateTime getCreationDateTime() {
         return creationDateTime;
     }

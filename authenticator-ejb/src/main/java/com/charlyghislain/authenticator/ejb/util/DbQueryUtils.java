@@ -5,6 +5,7 @@ import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.domain.domain.util.Sort;
 import com.charlyghislain.authenticator.domain.domain.util.SortExpressionMapper;
 import com.charlyghislain.authenticator.domain.domain.util.WithId;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -32,8 +33,8 @@ public class DbQueryUtils {
         return listResult.stream().findAny();
     }
 
-    public static <T extends WithId> ResultList<T> toResultList(EntityManager entityManager,
-                                                                CriteriaQuery<T> query) {
+    public static <T extends WithId> ResultList<T> toResultList(@NonNull EntityManager entityManager,
+                                                                @NonNull CriteriaQuery<T> query) {
         Root<T> mainSelection = getMainSelection(query);
         Long countResult = getTotalCountResult(entityManager, query, mainSelection);
 
@@ -43,9 +44,9 @@ public class DbQueryUtils {
         return new ResultList<>(listResult, countResult);
     }
 
-    public static <T extends WithId> ResultList<T> toResultList(EntityManager entityManager,
-                                                                CriteriaQuery<T> query,
-                                                                Pagination<T> pagination) {
+    public static <T extends WithId> ResultList<T> toResultList(@NonNull EntityManager entityManager,
+                                                                @NonNull CriteriaQuery<T> query,
+                                                                @NonNull Pagination<T> pagination) {
         Root<T> mainSelection = getMainSelection(query);
         Long countResult = getTotalCountResult(entityManager, query, mainSelection);
         List<T> results = getOrderedListResult(entityManager, query, pagination, mainSelection);
@@ -122,7 +123,7 @@ public class DbQueryUtils {
         return typedQuery.getResultList();
     }
 
-    private static <T extends WithId> Order mapSort(CriteriaBuilder criteriaBuilder,
+    private static <T extends WithId> Order mapSort(@NonNull CriteriaBuilder criteriaBuilder,
                                                     Root<T> mainSelection,
                                                     Sort<T> sort) {
 

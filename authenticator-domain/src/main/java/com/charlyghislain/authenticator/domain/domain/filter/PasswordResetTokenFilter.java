@@ -14,6 +14,7 @@ public class PasswordResetTokenFilter {
     @Nullable
     private User user;
 
+    @Nullable
     public Long getId() {
         return id;
     }
@@ -22,6 +23,7 @@ public class PasswordResetTokenFilter {
         this.id = id;
     }
 
+    @Nullable
     public Boolean getActive() {
         return active;
     }
@@ -30,6 +32,7 @@ public class PasswordResetTokenFilter {
         this.active = active;
     }
 
+    @Nullable
     public String getToken() {
         return token;
     }
@@ -38,6 +41,7 @@ public class PasswordResetTokenFilter {
         this.token = token;
     }
 
+    @Nullable
     public User getUser() {
         return user;
     }
