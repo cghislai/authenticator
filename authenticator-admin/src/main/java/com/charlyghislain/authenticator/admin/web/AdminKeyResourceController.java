@@ -27,6 +27,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
@@ -68,6 +69,7 @@ public class AdminKeyResourceController implements AdminKeyResource {
     @Override
     public WsKey createKey(@NonNull WsKey wsKey) {
         RsaKeyPair key = keyConverter.toRsaKeyPair(wsKey);
+        key.setCreationTime(LocalDateTime.now());
         try {
             RsaKeyPair rsaKeyPair = rsaKeyPairUpdateService.createNewKey(key);
             return wsKeyConverter.toWskey(rsaKeyPair);

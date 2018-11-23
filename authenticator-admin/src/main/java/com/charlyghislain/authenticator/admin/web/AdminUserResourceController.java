@@ -32,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
@@ -92,6 +93,7 @@ public class AdminUserResourceController implements AdminUserResource {
     @Override
     public WsUser updateUser(Long userId, WsUser wsUser) {
         User user = userConverter.toUser(wsUser);
+        user.setCreationTime(LocalDateTime.now());
         User existingUser = userQueryService.findUserById(userId)
                 .orElseThrow(this::newNotFoundException);
         try {

@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RolesAllowed({AuthenticatorConstants.ROLE_ADMIN})
@@ -86,6 +87,7 @@ public class AdminApplicationResourceController implements AdminApplicationResou
     @Override
     public WsApplication createApplication(@NonNull WsApplication wsApplication) {
         Application application = applicationConverter.toWsApplication(wsApplication);
+        application.setCreationTime(LocalDateTime.now());
         try {
             Application updatedApplication = applicationUpdateService.createApplication(application);
             return wsApplicationConverter.toWsapplication(updatedApplication);
