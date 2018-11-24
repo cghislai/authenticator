@@ -67,6 +67,10 @@ public class SigningKKeyPairsProvider {
         loadApplicationsKeys();
     }
 
+    public void clearApplicationKey(Application application) {
+        applicationSigningKeys.remove(application);
+    }
+
     private void loadAuthenticatorKeyForApplicationSecrets() {
         Optional<RsaKeyPair> authenticatorKeyForApplicationSecrets = findAuthenticatorSingingKeyForApplicationSecrets();
         this.authenticatorSigningKeyForApplicationSecrets = authenticatorKeyForApplicationSecrets.orElse(null);

@@ -47,6 +47,10 @@ public class ResultList<T extends Object> {
         return results.stream();
     }
 
+    public boolean hasResults() {
+        return totalCount > 0;
+    }
+
     public void forEach(Consumer<T> consumer) {
         results.forEach(consumer);
     }

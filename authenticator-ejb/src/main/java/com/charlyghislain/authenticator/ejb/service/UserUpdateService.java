@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.*;
 import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.filter.UserFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.domain.domain.validation.PasswordValidator;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidEmail;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifierName;
@@ -324,6 +325,15 @@ public class UserUpdateService {
 
         passwordResetTokenUpdateService.removeAllUserTokens(managedUser);
         return managedUser;
+    }
+
+    @RolesAllowed(AuthenticatorConstants.ROLE_ADMIN)
+    public void deleteUser(@NonNull @NotNull User user) {
+        UserApplicationFilter userApplicationFilter = new UserApplicationFilter();
+        userApplicationFilter.setUser(user);
+        ResultList<UserApplication> allUserApplications = userQueryService.findAllUserApplications(userApplicationFilter);
+        allUserApplications.forEach(this::forgetApplicationUser);
+        removeUser(user);
     }
 
 

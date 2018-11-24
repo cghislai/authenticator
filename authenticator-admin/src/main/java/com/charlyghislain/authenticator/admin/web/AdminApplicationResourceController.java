@@ -13,6 +13,7 @@ import com.charlyghislain.authenticator.admin.web.converter.ApplicationFilterCon
 import com.charlyghislain.authenticator.admin.web.converter.WsApplicationConverter;
 import com.charlyghislain.authenticator.admin.web.converter.WsApplicationHealthConverter;
 import com.charlyghislain.authenticator.domain.domain.Application;
+import com.charlyghislain.authenticator.domain.domain.exception.ExistingActiveApplicationUsersException;
 import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
 import com.charlyghislain.authenticator.domain.domain.exception.NoSigningKeyException;
 import com.charlyghislain.authenticator.domain.domain.filter.ApplicationFilter;
@@ -80,6 +81,17 @@ public class AdminApplicationResourceController implements AdminApplicationResou
             return wsApplicationConverter.toWsapplication(updatedApplication);
         } catch (NameAlreadyExistsException e) {
             throw new AuthenticatorAdminWebException(AuthenticatorAdminWebError.NAME_ALREADY_EXISTS);
+        }
+    }
+
+    @Override
+    public void deleteApplication(Long applicationId) {
+        Application existingApplication = applicationQueryService.findApplicationById(applicationId)
+                .orElseThrow(this::newNotFoundException);
+        try {
+            applicationUpdateService.removeApplication(existingApplication);
+        } catch (ExistingActiveApplicationUsersException e) {
+            throw new AuthenticatorAdminWebException(AuthenticatorAdminWebError.ACTIVE_USERS_EXIST);
         }
     }
 

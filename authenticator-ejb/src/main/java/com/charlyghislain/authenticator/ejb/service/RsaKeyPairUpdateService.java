@@ -3,10 +3,7 @@ package com.charlyghislain.authenticator.ejb.service;
 
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
-import com.charlyghislain.authenticator.domain.domain.exception.CannotDeactivateSigningKey;
-import com.charlyghislain.authenticator.domain.domain.exception.KeyIsLastActiveInScopeException;
-import com.charlyghislain.authenticator.domain.domain.exception.KeyScopeChangedException;
-import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
+import com.charlyghislain.authenticator.domain.domain.exception.*;
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
@@ -97,6 +94,15 @@ public class RsaKeyPairUpdateService {
             return this.setSigningKey(managedKeyPair);
         }
         return managedKeyPair;
+    }
+
+    public void removeKey(@NonNull @NotNull RsaKeyPair rsaKeyPair) throws InvalidKeyScopeException {
+        Application application = rsaKeyPair.getApplication()
+                .orElseThrow(() -> new InvalidKeyScopeException("Only application keys can be removed"));
+        signingKKeyPairsProvider.clearApplicationKey(application);
+        
+        @NotNull RsaKeyPair managedKey = entityManager.merge(rsaKeyPair);
+        entityManager.remove(managedKey);
     }
 
     public RsaKeyPair setSigningKey(@NonNull RsaKeyPair keyPair) {

@@ -3,12 +3,21 @@ package com.charlyghislain.authenticator.ejb.service;
 
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
+import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
+import com.charlyghislain.authenticator.domain.domain.exception.ExistingActiveApplicationUsersException;
+import com.charlyghislain.authenticator.domain.domain.exception.InvalidKeyScopeException;
 import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
 import com.charlyghislain.authenticator.domain.domain.filter.ApplicationFilter;
+import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
+import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.util.CharacterSequences;
+import com.charlyghislain.authenticator.domain.domain.util.Pagination;
+import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,6 +31,7 @@ import java.util.Random;
 @Stateless
 public class ApplicationUpdateService {
 
+    private final static Logger LOG = LoggerFactory.getLogger(ApplicationUpdateService.class);
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -29,6 +39,14 @@ public class ApplicationUpdateService {
     private ApplicationQueryService applicationQueryService;
     @Inject
     private RsaKeyPairUpdateService rsaKeyPairUpdateService;
+    @Inject
+    private UserQueryService userQueryService;
+    @Inject
+    private UserUpdateService userUpdateService;
+    @Inject
+    private RsaKeyPairQueryService keyPairQueryService;
+    @Inject
+    private RsaKeyPairUpdateService keyPairUpdateService;
 
 
     public Application createApplication(@NonNull @Valid Application newApplication) throws NameAlreadyExistsException {
@@ -82,6 +100,53 @@ public class ApplicationUpdateService {
         return saveApplication(existingApplication);
     }
 
+    public void removeApplication(@NonNull @NotNull Application existingApplication) throws ExistingActiveApplicationUsersException {
+        // Only allow removing applications without any active users
+        ResultList<UserApplication> userApplications = findActiveUserApplications(existingApplication);
+        if (userApplications.hasResults()) {
+            throw new ExistingActiveApplicationUsersException();
+        }
+        // Gather linked resources
+        ResultList<UserApplication> allUserApplications = findAllUserApplications(existingApplication);
+        ResultList<RsaKeyPair> allApplicationKeys = findAllApplicationKeys(existingApplication);
+
+        LOG.info("Removing application {} as well as the {} users and the {} keys linked to it",
+                existingApplication.getName(), allUserApplications.getTotalCount(), allApplicationKeys.getTotalCount());
+        allUserApplications.forEach(userUpdateService::forgetApplicationUser);
+        allApplicationKeys.forEach(this::removeKeyPair);
+        deleteApplication(existingApplication);
+    }
+
+    private void removeKeyPair(RsaKeyPair rsaKeyPair) {
+        try {
+            keyPairUpdateService.removeKey(rsaKeyPair);
+        } catch (InvalidKeyScopeException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @NonNull
+    private ResultList<UserApplication> findActiveUserApplications(@NonNull @NotNull Application existingApplication) {
+        UserApplicationFilter activeApplicationUsers = new UserApplicationFilter();
+        activeApplicationUsers.setActive(true);
+        activeApplicationUsers.setApplication(existingApplication);
+        return userQueryService.findUserApplications(activeApplicationUsers, new Pagination<>(0));
+    }
+
+    @NonNull
+    private ResultList<UserApplication> findAllUserApplications(@NonNull @NotNull Application existingApplication) {
+        UserApplicationFilter userApplicationFilter = new UserApplicationFilter();
+        userApplicationFilter.setApplication(existingApplication);
+        return userQueryService.findAllUserApplications(userApplicationFilter);
+    }
+
+    @NonNull
+    private ResultList<RsaKeyPair> findAllApplicationKeys(@NonNull @NotNull Application existingApplication) {
+        KeyFilter keyFilter = new KeyFilter();
+        keyFilter.setApplication(existingApplication);
+        return keyPairQueryService.findAllRsaKeyPairs(keyFilter);
+    }
+
     private void checkDuplicateName(Application existingApplication, String newName) throws NameAlreadyExistsException {
         ApplicationFilter filter = new ApplicationFilter();
         filter.setName(newName);
@@ -122,6 +187,12 @@ public class ApplicationUpdateService {
     private Application saveApplication(Application application) {
         Application managedApplication = entityManager.merge(application);
         return managedApplication;
+    }
+
+
+    private void deleteApplication(Application application) {
+        Application managedApplication = entityManager.merge(application);
+        entityManager.remove(managedApplication);
     }
 
 

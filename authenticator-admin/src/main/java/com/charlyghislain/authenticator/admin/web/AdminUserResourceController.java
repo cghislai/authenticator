@@ -109,6 +109,13 @@ public class AdminUserResourceController implements AdminUserResource {
     }
 
     @Override
+    public void deleteUser(Long userId) {
+        User existingUser = userQueryService.findUserById(userId)
+                .orElseThrow(this::newNotFoundException);
+        userUpdateService.deleteUser(existingUser);
+    }
+
+    @Override
     public void updatePassword(Long userId, @NonNull String password) {
         User existingUser = userQueryService.findUserById(userId)
                 .orElseThrow(this::newNotFoundException);

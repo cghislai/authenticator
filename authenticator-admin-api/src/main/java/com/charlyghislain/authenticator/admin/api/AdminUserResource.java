@@ -43,6 +43,10 @@ public interface AdminUserResource {
     @Path("/{id}")
     WsUser updateUser(@PathParam("id") Long userId, WsUser wsUser);
 
+    @DELETE
+    @Path("/{id}")
+    void deleteUser(@PathParam("id") Long userId);
+
     @PUT
     @Path("/{id}/password")
     @Consumes(MediaType.TEXT_PLAIN)
