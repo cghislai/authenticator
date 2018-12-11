@@ -46,7 +46,9 @@ else
     exit 1
 fi
 
-exec "java" "-jar" "/opt/payara/payara-micro.jar" \
+exec "java" \
+    "${JAVA_ARGS}" \
+    "-jar" "/opt/payara/payara-micro.jar" \
     "--prebootcommandfile" "${PRE_BOOT_FILE}" \
     "--addlibs" "/opt/payara/lib/" \
     "$@"

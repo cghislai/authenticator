@@ -25,10 +25,13 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.security.enterprise.identitystore.PasswordHash;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @Stateless
 public class UserUpdateService {
@@ -123,7 +126,7 @@ public class UserUpdateService {
 
     @RolesAllowed({AuthenticatorConstants.ROLE_APPLICATION, AuthenticatorConstants.ROLE_ADMIN})
     public UserApplication createApplicationUser(@NotNull Application application, @NonNull User newUser,
-                                                 @NonNull @ValidPassword String newUserPassword) throws NameAlreadyExistsException, EmailAlreadyExistsException {
+                                                 @NonNull @ValidPassword String newUserPassword) throws NameAlreadyExistsException, EmailAlreadyExistsException, ValidationException {
         String name = newUser.getName();
         String email = newUser.getEmail();
         boolean active = newUser.isActive();
@@ -140,7 +143,13 @@ public class UserUpdateService {
         user.setPasswordExpired(true);
         user.setCreationTime(LocalDateTime.now());
 
-        User managedUser = saveUser(user);
+        User managedUser;
+        try {
+            managedUser = saveUser(user);
+        } catch (ConstraintViolationException violationException) {
+            Set<ConstraintViolation<?>> constraintViolations = violationException.getConstraintViolations();
+            throw new ValidationException(constraintViolations);
+        }
         managedUser = setUserPassword(managedUser, newUserPassword);
 
         UserApplication userApplication = new UserApplication();

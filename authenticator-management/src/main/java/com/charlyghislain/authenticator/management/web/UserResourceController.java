@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.management.web;
 
 import com.charlyghislain.authenticator.domain.domain.*;
 import com.charlyghislain.authenticator.domain.domain.exception.EmailAlreadyExistsException;
+import com.charlyghislain.authenticator.domain.domain.exception.ValidationException;
 import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
 import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
 import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
@@ -14,16 +15,24 @@ import com.charlyghislain.authenticator.ejb.service.UserQueryService;
 import com.charlyghislain.authenticator.ejb.service.UserUpdateService;
 import com.charlyghislain.authenticator.management.api.UserResource;
 import com.charlyghislain.authenticator.management.api.domain.*;
+import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementValidationException;
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebError;
 import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebException;
+import com.charlyghislain.authenticator.management.api.domain.WsViolationError;
 import com.charlyghislain.authenticator.management.web.converter.*;
 import com.charlyghislain.authenticator.management.web.provider.CallerManagedApplication;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RolesAllowed({AuthenticatorConstants.ROLE_APP_MANAGEMENT})
 public class UserResourceController implements UserResource {
@@ -46,6 +55,8 @@ public class UserResourceController implements UserResource {
     private PasswordResetTokenUpdateService passwordResetTokenUpdateService;
     @Inject
     private WsPasswordResetTokenConverter wsPasswordResetTokenConverter;
+    @Inject
+    private WsValidationErrorConverter wsValidationErrorConverter;
 
     @Inject
     @CallerManagedApplication
@@ -58,7 +69,10 @@ public class UserResourceController implements UserResource {
         String password = wsApplicationUser.getPassword();
         boolean passwordValid = userUpdateService.checkPasswordValidity(password);
         if (!passwordValid) {
-            throw new AuthenticatorManagementWebException(AuthenticatorManagementWebError.INVALID_PASSWORD);
+            // FIXME: use bean validation / wsvalidationerror returned from auth backend
+            WsViolationError wsViolationError = new WsViolationError("password", "com.charlyghislain.authenticator.domain.domain.validation.ValidPassword.message");
+            Set<WsViolationError> errorSet = Collections.singleton(wsViolationError);
+            throw new AuthenticatorManagementValidationException(AuthenticatorManagementWebError.INVALID_PASSWORD.name(), errorSet);
         }
         try {
             UserApplication newUserApplication = userUpdateService.createApplicationUser(callerManagedApplication, user, password);
@@ -67,6 +81,12 @@ public class UserResourceController implements UserResource {
             throw new AuthenticatorManagementWebException(AuthenticatorManagementWebError.EMAIL_ALREADY_EXISTS);
         } catch (NameAlreadyExistsException e) {
             throw new AuthenticatorManagementWebException(AuthenticatorManagementWebError.NAME_ALREADY_EXISTS);
+        } catch (ValidationException e) {
+            Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+            Set<WsViolationError> validationErrors = constraintViolations.stream()
+                    .map(wsValidationErrorConverter::toWsValidationError)
+                    .collect(Collectors.toSet());
+            throw new AuthenticatorManagementValidationException(AuthenticatorManagementWebError.VALIDATION_ERROR.name(), validationErrors);
         }
     }
 

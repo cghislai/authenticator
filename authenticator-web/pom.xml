@@ -16,6 +16,10 @@
     <description>Deployable war containing all rest resources</description>
     <url>https://github.com/cghislai/authenticator</url>
 
+    <build>
+        <finalName>authenticator-web</finalName>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>com.charlyghislain.authenticator</groupId>

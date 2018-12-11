@@ -1,11 +1,8 @@
 package com.charlyghislain.authenticator.management.web;
 
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
-import com.charlyghislain.authenticator.management.web.provider.AuthenticatorManagementWebExceptionMapper;
-import com.charlyghislain.authenticator.management.web.provider.CrossOriginResourceSharingRequestFilter;
-import com.charlyghislain.authenticator.management.web.provider.CrossOriginResourceSharingResponseFilter;
-import com.charlyghislain.authenticator.management.web.provider.ThrowableExceptionMapper;
-import com.charlyghislain.authenticator.management.web.provider.WebApplicationExceptionMapper;
+import com.charlyghislain.authenticator.management.api.error.AuthenticatorManagementWebException;
+import com.charlyghislain.authenticator.management.web.provider.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.security.DeclareRoles;
@@ -28,6 +25,7 @@ public class AuthenticatorManagementWebApplication extends Application {
         classes.add(ConnectivityResourceController.class);
         classes.add(UserResourceController.class);
 
+        classes.add(AuthenticatorManagementValidationExceptionMapper.class);
         classes.add(AuthenticatorManagementWebExceptionMapper.class);
         classes.add(CrossOriginResourceSharingRequestFilter.class);
         classes.add(CrossOriginResourceSharingResponseFilter.class);

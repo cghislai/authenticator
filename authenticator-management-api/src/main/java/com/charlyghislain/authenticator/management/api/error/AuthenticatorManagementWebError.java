@@ -9,8 +9,8 @@ public enum AuthenticatorManagementWebError {
     EMAIL_ALREADY_EXISTS(406),
     NAME_ALREADY_EXISTS(406),
     USER_NOT_FOUND(404),
-    INVALID_USER(400),
-    INVALID_PASSWORD(400),
+    VALIDATION_ERROR(406),
+    INVALID_PASSWORD(406),
     UNAUTHORIZED_OPERATION(403);
 
     int httpStatus;
