@@ -67,13 +67,7 @@ public class UserResourceController implements UserResource {
     public WsApplicationUser createUser(@NonNull WsApplicationUserWithPassword wsApplicationUser) {
         User user = userConverter.toUser(wsApplicationUser);
         String password = wsApplicationUser.getPassword();
-        boolean passwordValid = userUpdateService.checkPasswordValidity(password);
-        if (!passwordValid) {
-            // FIXME: use bean validation / wsvalidationerror returned from auth backend
-            WsViolationError wsViolationError = new WsViolationError("password", "com.charlyghislain.authenticator.domain.domain.validation.ValidPassword.message");
-            Set<WsViolationError> errorSet = Collections.singleton(wsViolationError);
-            throw new AuthenticatorManagementValidationException(AuthenticatorManagementWebError.INVALID_PASSWORD.name(), errorSet);
-        }
+        checkPasswordValidity(password);
         try {
             UserApplication newUserApplication = userUpdateService.createApplicationUser(callerManagedApplication, user, password);
             return wsApplicationUserConverter.toWsUserApplication(newUserApplication);
@@ -122,6 +116,8 @@ public class UserResourceController implements UserResource {
     @Override
     public WsApplicationUser updateUserPassword(Long userId, @NonNull String password) {
         UserApplication userApplication = getUserApplication(userId);
+        checkPasswordValidity(password);
+
         try {
             UserApplication updatedUserApplication = userUpdateService.updateApplicationUserPassword(userApplication, password);
             return wsApplicationUserConverter.toWsUserApplication(updatedUserApplication);
@@ -146,6 +142,8 @@ public class UserResourceController implements UserResource {
         User user = userApplication.getUser();
         String resetToken = wsPasswordReset.getResetToken();
         String password = wsPasswordReset.getPassword();
+
+        checkPasswordValidity(password);
 
         try {
             userUpdateService.resetUserPassword(user, password, resetToken);
@@ -188,4 +186,16 @@ public class UserResourceController implements UserResource {
         return userQueryService.findUserApplication(userApplicationFilter)
                 .orElseThrow(() -> new AuthenticatorManagementWebException(AuthenticatorManagementWebError.USER_NOT_FOUND));
     }
+
+
+    private void checkPasswordValidity(@NonNull String password) {
+        boolean validPassword = userUpdateService.checkPasswordValidity(password);
+        if (!validPassword) {
+            // FIXME: use bean validation / wsvalidationerror returned from auth backend
+            WsViolationError wsViolationError = new WsViolationError("password", "com.charlyghislain.authenticator.domain.domain.validation.ValidPassword.message");
+            Set<WsViolationError> errorSet = Collections.singleton(wsViolationError);
+            throw new AuthenticatorManagementValidationException(AuthenticatorManagementWebError.INVALID_PASSWORD.name(), errorSet);
+        }
+    }
+
 }
