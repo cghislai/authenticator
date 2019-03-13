@@ -119,7 +119,12 @@ public class AdminUserResourceController implements AdminUserResource {
     public void updatePassword(Long userId, @NonNull String password) {
         User existingUser = userQueryService.findUserById(userId)
                 .orElseThrow(this::newNotFoundException);
-        userUpdateService.setUserPassword(existingUser, password);
+        boolean validPassword = userUpdateService.checkPasswordValidity(password);
+        if (validPassword) {
+            userUpdateService.setUserPassword(existingUser, password);
+        } else {
+            throw new AuthenticatorAdminWebException(AuthenticatorAdminWebError.INVALID_PASSWORD, "com.charlyghislain.authenticator.domain.domain.validation.ValidPassword.message");
+        }
     }
 
     @NonNull

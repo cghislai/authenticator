@@ -14,6 +14,7 @@ public enum AuthenticatorAdminWebError {
     ACTIVE_USERS_EXIST(406),
     KEY_NOT_FOUND(404),
     USER_NOT_FOUND(404),
+    INVALID_PASSWORD(400),
     SORTS_DESERIALIZATION_EXCEPTION(400);
 
     int httpStatus;
