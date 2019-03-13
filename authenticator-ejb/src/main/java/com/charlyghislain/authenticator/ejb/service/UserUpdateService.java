@@ -13,6 +13,7 @@ import com.charlyghislain.authenticator.domain.domain.validation.PasswordValidat
 import com.charlyghislain.authenticator.domain.domain.validation.ValidEmail;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidIdentifierName;
 import com.charlyghislain.authenticator.domain.domain.validation.ValidPassword;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -28,12 +29,15 @@ import javax.security.enterprise.identitystore.PasswordHash;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
 @Stateless
+@AuthenticatorManagedError
 public class UserUpdateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserUpdateService.class);
@@ -53,6 +57,8 @@ public class UserUpdateService {
     private EmailVerificationUpdateService emailVerificationUpdateService;
     @Inject
     private PasswordResetTokenUpdateService passwordResetTokenUpdateService;
+    @Inject
+    private Validator validator;
 
     public boolean checkPasswordValidity(String password) {
         return PasswordValidator.isPasswordValid(password);

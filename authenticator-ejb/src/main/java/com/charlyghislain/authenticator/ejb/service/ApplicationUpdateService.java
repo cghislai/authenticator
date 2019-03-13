@@ -14,6 +14,7 @@ import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilt
 import com.charlyghislain.authenticator.domain.domain.util.CharacterSequences;
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 @Stateless
+@AuthenticatorManagedError
 public class ApplicationUpdateService {
 
     private final static Logger LOG = LoggerFactory.getLogger(ApplicationUpdateService.class);

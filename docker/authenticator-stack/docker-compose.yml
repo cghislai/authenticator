@@ -26,12 +26,11 @@ services:
     volumes:
       - '/dev/urandom:/dev/random'
       - '../../authenticator-web/target/authenticator-web.war:/run/authenticator-web.war'
-      - './authenticator.properties:/run/authenticator.properties'
+      - './authenticator.properties.private:/run/authenticator.properties'
       - './keystore.jks:/run/keystore.jks'
       - './cacerts.jks:/run/cacerts.jks'
     ports:
       - 8443:8443
-      - 4848:4848
       - 9001:9009
 
   admin-front:

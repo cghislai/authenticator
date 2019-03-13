@@ -7,6 +7,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.*;
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 @Stateless
 //@RolesAllowed(AuthenticatorConstants.ROLE_ADMIN)
+@AuthenticatorManagedError
 public class RsaKeyPairUpdateService {
 
 

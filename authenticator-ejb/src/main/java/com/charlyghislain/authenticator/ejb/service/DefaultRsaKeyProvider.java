@@ -3,10 +3,12 @@ package com.charlyghislain.authenticator.ejb.service;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+@AuthenticatorManagedError
 public class DefaultRsaKeyProvider implements RSAKeyProvider {
 
     private RsaKeyPairQueryService rsaKeyPairQueryService;

@@ -7,6 +7,7 @@ import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationRole;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless
+@AuthenticatorManagedError
 public class AccessQueryService {
 
     @Inject

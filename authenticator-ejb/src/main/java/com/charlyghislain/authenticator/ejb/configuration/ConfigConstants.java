@@ -43,4 +43,11 @@ public class ConfigConstants {
     public static final String CORS_ALLOWED_ORIGINS
             = "com.charlyghislain.authenticator.cors.allowedOrigins";
 
+    public static final String ERRORS_SEND_MAIL
+            = "com.charlyghislain.authenticator.error.sendMail";
+    public static final String ERROR_MAIL_FROM
+            = "com.charlyghislain.authenticator.error.mail.from";
+    public static final String ERROR_MAIL_TO
+            = "com.charlyghislain.authenticator.error.mail.to";
+
 }

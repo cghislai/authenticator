@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationAuthe
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationHealth;
 import com.charlyghislain.authenticator.domain.domain.util.Pagination;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.DbQueryUtils;
 import com.charlyghislain.authenticator.ejb.util.FilterUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
+@AuthenticatorManagedError
 public class ApplicationQueryService {
 
     @PersistenceContext

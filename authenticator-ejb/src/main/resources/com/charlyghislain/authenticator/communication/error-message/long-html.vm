@@ -1,0 +1,11 @@
+<h1>Uncaught error at ${app.url}</h1>
+
+<p>
+    <label>Message:</label>
+    <span><pre>${error.message}</pre></span>
+</p>
+
+<p>
+    <label>Stack:</label>
+    <span><pre>${error.stackTrace}</pre></span>
+</p>

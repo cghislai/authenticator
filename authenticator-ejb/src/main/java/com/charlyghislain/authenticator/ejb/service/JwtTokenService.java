@@ -15,6 +15,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOper
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.domain.domain.util.CharacterSequences;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -34,6 +35,7 @@ import java.util.Random;
 import java.util.Set;
 
 @Stateless
+@AuthenticatorManagedError
 public class JwtTokenService {
 
     @Inject

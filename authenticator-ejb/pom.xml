@@ -75,6 +75,15 @@
             <groupId>org.eclipse.microprofile.health</groupId>
             <artifactId>microprofile-health-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.dispatcher</groupId>
+            <artifactId>dispatcher-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.charlyghislain.dispatcher</groupId>
+            <artifactId>dispatcher</artifactId>
+            <type>ejb</type>
+        </dependency>
     </dependencies>
 
 

@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.filter.PasswordResetTokenFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Stateless
+@AuthenticatorManagedError
 public class PasswordResetTokenUpdateService {
 
     @PersistenceContext

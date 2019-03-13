@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOper
 import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.domain.domain.util.ResultList;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Stateless
+@AuthenticatorManagedError
 public class CallerQueryService {
 
     @Inject

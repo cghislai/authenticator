@@ -6,6 +6,7 @@ import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.exception.NoSigningKeyException;
 import com.charlyghislain.authenticator.domain.domain.filter.ApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 @ApplicationScoped
+@AuthenticatorManagedError
 public class SigningKKeyPairsProvider {
 
     @Inject

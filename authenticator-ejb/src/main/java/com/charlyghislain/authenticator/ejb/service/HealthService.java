@@ -2,6 +2,7 @@ package com.charlyghislain.authenticator.ejb.service;
 
 
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
@@ -15,6 +16,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 @Stateless
+@AuthenticatorManagedError
 public class HealthService {
 
     @EJB

@@ -9,6 +9,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOper
 import com.charlyghislain.authenticator.domain.domain.filter.EmailVerificationTokenFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Stateless
+@AuthenticatorManagedError
 public class EmailVerificationUpdateService {
 
     @PersistenceContext

@@ -8,6 +8,7 @@ import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExist
 import com.charlyghislain.authenticator.domain.domain.filter.KeyFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import com.charlyghislain.authenticator.ejb.util.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.Config;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 @Stateless
 //@RunAs(AuthenticatorConstants.ROLE_ADMIN)
+@AuthenticatorManagedError
 public class DefaultResourcesService {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultResourcesService.class);
 

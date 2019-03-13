@@ -4,6 +4,7 @@ package com.charlyghislain.authenticator.ejb.service;
 import com.charlyghislain.authenticator.domain.domain.RsaKeyPair;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
 import com.charlyghislain.authenticator.ejb.configuration.ConfigConstants;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -28,6 +29,7 @@ import java.util.Arrays;
 import java.util.Base64;
 
 @Stateless
+@AuthenticatorManagedError
 public class RsaKeyPairConverterService {
 
     private static final int RSA_KEY_SIZE = 4096;

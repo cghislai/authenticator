@@ -5,12 +5,14 @@ import com.charlyghislain.authenticator.domain.client.ApplicationUserEventsClien
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
+@AuthenticatorManagedError
 public class ApplicationEventService {
 
     @Inject

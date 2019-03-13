@@ -60,6 +60,7 @@
 
     <properties>
         <typescript.api.npm.version>${project.version}</typescript.api.npm.version>
+        <dispatcher.version>2.0.1-SNAPSHOT</dispatcher.version>
         <!-- To be set by other plugins -->
         <!--suppress UnresolvedMavenProperty -->
         <annotatedJdk>${org.checkerframework:jdk8:jar}</annotatedJdk>
@@ -105,6 +106,19 @@
                 <scope>provided</scope>
             </dependency>
 
+            <dependency>
+                <groupId>com.charlyghislain.dispatcher</groupId>
+                <artifactId>dispatcher-api</artifactId>
+                <version>${dispatcher.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.charlyghislain.dispatcher</groupId>
+                <artifactId>dispatcher</artifactId>
+                <version>${dispatcher.version}</version>
+                <type>ejb</type>
+                <scope>provided</scope>
+            </dependency>
 
             <dependency>
                 <groupId>javax.validation</groupId>

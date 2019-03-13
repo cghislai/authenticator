@@ -3,6 +3,7 @@ package com.charlyghislain.authenticator.ejb.service;
 import com.charlyghislain.authenticator.domain.client.ApplicationAuthorizationClient;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
 import com.charlyghislain.authenticator.domain.domain.secondary.ApplicationRole;
+import com.charlyghislain.authenticator.ejb.util.AuthenticatorManagedError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.ejb.Stateless;
@@ -11,6 +12,7 @@ import java.util.List;
 
 
 @Stateless
+@AuthenticatorManagedError
 public class ApplicationUserRoleQueryService {
 
     @Inject
