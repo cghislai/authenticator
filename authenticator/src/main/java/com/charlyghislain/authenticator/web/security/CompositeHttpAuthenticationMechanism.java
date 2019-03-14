@@ -10,11 +10,13 @@ import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
+import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class CompositeHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
@@ -28,14 +30,27 @@ public class CompositeHttpAuthenticationMechanism implements HttpAuthenticationM
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, @NonNull HttpMessageContext httpMessageContext) throws AuthenticationException {
-        CredentialValidationResult validationResult = StreamSupport.stream(httpCredentialProviders.spliterator(), false)
-                .map(provider -> provider.extractCredential(request))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        CredentialValidationResult validationResult = streamCredentials(request)
                 .findFirst()
-                .map(identityStoreHandler::validate)
+                .map(this::validateCredential)
                 .orElse(CredentialValidationResult.NOT_VALIDATED_RESULT);
         return this.handleValidationResult(validationResult, httpMessageContext);
+    }
+
+    @NonNull
+    private Stream<Credential> streamCredentials(HttpServletRequest request) {
+        return StreamSupport.stream(httpCredentialProviders.spliterator(), false)
+                .map(provider -> provider.extractCredential(request))
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+    }
+
+    private CredentialValidationResult validateCredential(Credential credential) {
+        try {
+            return identityStoreHandler.validate(credential);
+        } catch (Exception e) {
+            return CredentialValidationResult.INVALID_RESULT;
+        }
     }
 
     private AuthenticationStatus handleValidationResult(CredentialValidationResult validationResult, @NonNull HttpMessageContext httpMessageContext) {
