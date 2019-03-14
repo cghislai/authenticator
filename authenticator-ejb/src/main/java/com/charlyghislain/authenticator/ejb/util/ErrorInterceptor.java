@@ -1,6 +1,5 @@
 package com.charlyghislain.authenticator.ejb.util;
 
-import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorException;
 import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
 import com.charlyghislain.authenticator.ejb.service.ErrorService;
 
@@ -9,7 +8,6 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.util.Optional;
 
 @Interceptor
 @AuthenticatorManagedError
@@ -20,10 +18,10 @@ public class ErrorInterceptor {
     private ErrorService errorService;
 
     @AroundInvoke
-    public Object invokeGuarded(InvocationContext context) throws Throwable {
+    public Object invokeGuarded(InvocationContext context) throws Exception {
         try {
             return context.proceed();
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             AuthenticatorRuntimeException exceptionToRethrow = errorService.handleError(e);
             throw exceptionToRethrow;
         }
