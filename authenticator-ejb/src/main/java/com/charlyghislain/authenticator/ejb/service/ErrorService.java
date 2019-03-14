@@ -29,10 +29,8 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @ApplicationScoped
 public class ErrorService {

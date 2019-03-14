@@ -60,7 +60,7 @@
 
     <properties>
         <typescript.api.npm.version>${project.version}</typescript.api.npm.version>
-        <dispatcher.version>2.0.1-SNAPSHOT</dispatcher.version>
+        <dispatcher.version>2.0.1</dispatcher.version>
         <!-- To be set by other plugins -->
         <!--suppress UnresolvedMavenProperty -->
         <annotatedJdk>${org.checkerframework:jdk8:jar}</annotatedJdk>
