@@ -6,7 +6,7 @@
 
     <groupId>com.charlyghislain.authenticator</groupId>
     <artifactId>authenticator-parent</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6</version>
     <modules>
         <module>authenticator-api</module>
         <module>authenticator-admin-api</module>
@@ -71,38 +71,38 @@
             <dependency>
                 <groupId>com.charlyghislain.authenticator</groupId>
                 <artifactId>authenticator-admin-api</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
+                <version>1.0.6</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.charlyghislain.authenticator</groupId>
                 <artifactId>authenticator-application-api</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
+                <version>1.0.6</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.charlyghislain.authenticator</groupId>
                 <artifactId>authenticator-api</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
+                <version>1.0.6</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.charlyghislain.authenticator</groupId>
                 <artifactId>authenticator-domain</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
+                <version>1.0.6</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.charlyghislain.authenticator</groupId>
                 <artifactId>authenticator-ejb</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
+                <version>1.0.6</version>
                 <type>ejb</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.charlyghislain.authenticator</groupId>
                 <artifactId>authenticator-management-api</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
+                <version>1.0.6</version>
                 <scope>provided</scope>
             </dependency>
 
