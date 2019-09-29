@@ -4,7 +4,12 @@ package com.charlyghislain.authenticator.ejb.service;
 import com.charlyghislain.authenticator.domain.domain.Application;
 import com.charlyghislain.authenticator.domain.domain.User;
 import com.charlyghislain.authenticator.domain.domain.UserApplication;
-import com.charlyghislain.authenticator.domain.domain.exception.*;
+import com.charlyghislain.authenticator.domain.domain.exception.AdminCannotLockHerselfOutException;
+import com.charlyghislain.authenticator.domain.domain.exception.AuthenticatorRuntimeException;
+import com.charlyghislain.authenticator.domain.domain.exception.EmailAlreadyExistsException;
+import com.charlyghislain.authenticator.domain.domain.exception.NameAlreadyExistsException;
+import com.charlyghislain.authenticator.domain.domain.exception.UnauthorizedOperationException;
+import com.charlyghislain.authenticator.domain.domain.exception.ValidationException;
 import com.charlyghislain.authenticator.domain.domain.filter.UserApplicationFilter;
 import com.charlyghislain.authenticator.domain.domain.filter.UserFilter;
 import com.charlyghislain.authenticator.domain.domain.util.AuthenticatorConstants;
@@ -30,7 +35,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -499,7 +503,13 @@ public class UserUpdateService {
 
     private void removeUser(User user) {
         try {
-            User managedUser = entityManager.merge(user);
+            User managedUser;
+            boolean jpaManaged = entityManager.contains(user);
+            if (jpaManaged) {
+                managedUser = user;
+            } else {
+                managedUser = entityManager.merge(user);
+            }
             this.emailVerificationUpdateService.removeAllUserTokens(managedUser);
             this.passwordResetTokenUpdateService.removeAllUserTokens(managedUser);
             entityManager.remove(managedUser);
